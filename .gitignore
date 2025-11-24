@@ -1,32 +1,73 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
-# Binaries for programs and plugins
+# Binaries
 *.exe
-*.exe~
 *.dll
 *.so
 *.dylib
+*.out
 
-# Test binary, built with `go test -c`
+# Go build artifacts
+/bin/
+/build/
+/dist/
 *.test
 
-# Code coverage profiles and other test artifacts
-*.out
-coverage.*
+# Dependency directories
+/vendor/
+/node_modules/
+/sdk/js/node_modules/
+/sdk/python/.venv/
+/sdk/python/__pycache__/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# IDE/editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Terraform
+terraform.tfstate
+terraform.tfstate.*
+.terraform/
+*.tfvars
+
+# Docker
+*.env
+.env.*
+docker-compose.override.yml
+
+# Coverage
+coverage.out
 *.coverprofile
-profile.cov
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+# Python
+*.pyc
+__pycache__/
 
-# Go workspace file
-go.work
-go.work.sum
+# Misc
+*.local
+*.secret
+*.bak
 
-# env file
-.env
+# Ignore secrets and credentials
+secrets/
+*.key
+*.pem
+*.crt
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# Ignore explorer build artifacts
+explorer/build/
+explorer-ui/build/
+
+# Ignore admin UI build artifacts
+admin-ui/build/
+admin-dashboard/build/
