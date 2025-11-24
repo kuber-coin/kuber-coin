@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  chain:
+    build: ./chain
+    container_name: kuber-chain
+    ports:
+      - "26657:26657"
+    environment:
+      - PORT=26657
+    volumes:
+      - ./chain/data:/data
+    restart: unless-stopped
+
+  nft-mint:
+    build: ./nft-mint
+    container_name: kuber-nft-mint
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATA_DIR=/data
+    volumes:
+      - ./nft-mint/data:/data
+    depends_on:
+      - chain
+    restart: unless-stopped
+
+  wallet-ui:
+    build: ./wallet-ui
+    container_name: kuber-wallet-ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - chain
+      - nft-mint
+    restart: unless-stopped
