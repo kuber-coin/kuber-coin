@@ -282,10 +282,3 @@ User -> Wallet -> (build/sign) -> RPC -> Node Mempool -> Consensus(Proposer -> P
 - Keep diagrams updated as topology and scale change.
 
 ---
-
-If you want, I can:
-- Generate PNG/SVG exports from these ASCII diagrams.
-- Create a presentation-ready diagram pack (draw.io XML).
-- Produce a simplified one-page architecture infographic for grant applications.
-
-Tell me which format you want next.
