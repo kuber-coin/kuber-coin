@@ -1,0 +1,10 @@
+# HASHING TEST VECTORS
+
+## SHA256
+Input: ""
+Output:
+  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+Input: "kuber"
+Output:
+  405459f319fac8e5de7c0abadefa645ed90e2998878f18f7dc19f6ae4f67b379
