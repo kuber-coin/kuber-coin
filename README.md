@@ -194,3 +194,79 @@ Security is not a feature — it’s the backbone.
 
 # 📁 Repository Structure
 
+Private repositories include node, consensus, RPC, signer, indexer, validator, and chain logic.
+
+---
+
+# 🛡️ Security Model
+
+- No private keys are ever stored server-side  
+- Non-custodial cryptographic handling  
+- Private repos until audits  
+- Multi-layer code isolation  
+- Hardened RPC gateways  
+- Defense-in-depth for chain components  
+- Strict CI/CD security policies  
+
+---
+
+# ⚡ Scaling Blueprint (10-Year Strategy)
+
+### **Phase 1 — Foundation (Current)**
+- Wallet UI  
+- Explorer UI  
+- Domain deployments  
+- Initial RPC integration  
+- GitHub setup  
+- Documentation library  
+
+### **Phase 2 — Chain Integration**
+- Wallet ↔ RPC transaction signing  
+- Explorer ↔ indexer sync  
+- Node prototype  
+- Block production engine  
+- Mempool logic  
+
+### **Phase 3 — Infrastructure Scaling**
+- Multi-node clustering  
+- Optimized RPC routing  
+- L2 rollup compatibility  
+- Cross-chain bridging  
+- Fee optimizations  
+
+### **Phase 4 — Ecosystem Layer**
+- NFT engine  
+- Micro-payment engine  
+- Developer SDK v2  
+- Governance system  
+- Enterprise-grade API suite  
+
+### **Phase 5 — Global Rollout**
+- Token launch  
+- Validator onboarding  
+- Public testnet & mainnet  
+- Multi-chain integrations  
+- Merchant adoption  
+- Global Kuber payment system  
+
+Kuber is designed for decades — not months.
+
+---
+
+# 📚 Documentation
+
+Live docs will be available at:
+
+**Soon**  
+(Architecture • Modules • APIs • Guides • Chain Blueprint • Scaling Strategy • Token Model)
+
+---
+
+# 🧰 Developer Setup
+
+```bash
+npm install
+npm run dev
+npm run build
+npm run start
+
