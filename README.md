@@ -260,13 +260,5 @@ Live docs will be available at:
 **Soon**  
 (Architecture • Modules • APIs • Guides • Chain Blueprint • Scaling Strategy • Token Model)
 
----
 
-# 🧰 Developer Setup
-
-```bash
-npm install
-npm run dev
-npm run build
-npm run start
 
