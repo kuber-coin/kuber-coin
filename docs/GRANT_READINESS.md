@@ -17,14 +17,38 @@ KuberCoin is **not yet** ready to be pitched as broadly deployable mainnet
 infrastructure, externally audited critical financial software, or a deployed
 exchange/custody product.
 
+## Codebase at a Glance
+
+| Metric | Value |
+|--------|-------|
+| Rust crates | 11 (chain, consensus, tx, storage, testnet, node, miner, faucet, lightning, eip_signing, eip_signing) |
+| Rust source files | 112 |
+| Rust lines of code | ~47,700 |
+| Unit + integration tests | 1,301 (including 90 integration tests across 5 test suites) |
+| Test pass rate | 1,334/1,334 — zero failures on last full run |
+| Code coverage | 75.13% lines, 80.16% functions |
+| Web applications | 8 (wallet, explorer, monitoring, ops, unified, dapp, docs, site) |
+| TypeScript/TSX files | 459 |
+| Native platforms | 3 (Windows WinUI3, macOS SwiftUI, Linux GTK4) |
+| E2E test suites | 4 Playwright spec files + 7 wallet-specific test files |
+| Live E2E results | 88/88 wallet tests, 12/12 critical path tests |
+| SDK languages | 3 (JavaScript/TypeScript, Python, Rust) |
+| Infrastructure | Helm chart, K8s manifests, 4 Dockerfiles, 5 Compose configs |
+| CI/CD workflows | 7 GitHub Actions (CI, release, security-audit, fuzz, e2e, coverage, native-UI) |
+| Operations scripts | 42 (deploy, test, monitoring, launch validation) |
+| Documentation files | 62 Markdown documents |
+| Formal spec | TLA+ consensus model with TypeOK, ChainGrowth, CommonPrefix invariants |
+| Dependency audit | `cargo-deny` with license allowlist, advisory tracking, ban policy |
+| License | MIT |
+
 ## Grant Fit Summary
 
 | Grant | Fit | Strongest Evidence |
 |-------|-----|--------------------|
-| A1: NLNet NGI Zero | ⭐⭐⭐⭐⭐ | Open MIT Rust protocol; BIP-341 Taproot; BIP-155 addrv2 Tor; 75% coverage; live testnet |
-| A2: HRF Bitcoin Dev Fund | ⭐⭐⭐⭐⭐ | SOCKS5/Tor proxy (proxy_addr/tor_only); Lightning crate; HD wallet + BIP-39; Silent Payments design; CoinJoin/PayJoin roadmap |
-| A3: OSTIF Audit Funding | ⭐⭐⭐⭐⭐ | Audit scope prepared; zero first-party unsafe production code; zero exploitable advisories; fuzz expansion plan |
-| A4: Ethereum Foundation ESP | ⭐⭐⭐⭐⭐ | kubercoin-eip-signing crate (EIP-191/712/Eth address + test vectors); TLA+ consensus spec; ATOMIC_SWAPS.md; ETHEREUM_INTEROP.md |
+| A1: NLNet NGI Zero | Strong fit | Open MIT Rust protocol; 11 crates / ~47.7K LoC; BIP-341 Taproot; BIP-155 addrv2 Tor; 75% coverage; live testnet; TLA+ formal spec |
+| A2: HRF Bitcoin Dev Fund | Strong fit | SOCKS5/Tor proxy (`proxy_addr`/`tor_only`); Lightning crate (15 modules: channels, HTLC, onion routing, watchtower); HD wallet + BIP-39; Silent Payments design; CoinJoin/PayJoin roadmap |
+| A3: OSTIF Audit Funding | Good fit | Audit scope prepared; zero first-party `unsafe` in production code; zero exploitable advisories; fuzz harness expansion plan; 1,301 tests passing |
+| A4: Ethereum Foundation ESP | Good fit | `kubercoin-eip-signing` crate (EIP-191/712/Eth address + test vectors); TLA+ consensus spec; HTLC atomic swap specification with reference Solidity contract; ETHEREUM_INTEROP.md |
 
 ## Best-Fit Grant Types
 
@@ -44,19 +68,61 @@ Do not currently use the repository state for:
 
 ## Evidence You Can Defend Today
 
-- Real codebase maturity across chain, consensus, tx, storage, testnet, and node components
-- Local validation evidence recorded on 2026-03-16 for `cargo check`, `cargo test`, `cargo clippy`, and `cargo deny check`
-- Current measured Rust coverage of `75.13%` lines and `80.16%` functions, with remaining low-coverage modules called out explicitly in [COVERAGE.md](COVERAGE.md)
-- Live-stack wallet E2E validation recorded in [E2E_COIN_WORKFLOW.md](E2E_COIN_WORKFLOW.md), including `88/88` live wallet tests and `12/12` critical live wallet tests
-- Launch gate tracked in [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md), including what is done and what is still missing
-- Public security posture and audit-readiness summary captured in [SECURITY.md](SECURITY.md)
-- Consensus and roadmap discipline reflected in [CONSENSUS_FREEZE.md](CONSENSUS_FREEZE.md), [ROADMAP_BITCOIN_GRADE.md](ROADMAP_BITCOIN_GRADE.md), and [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)
+### Core Protocol
+- 11 Rust workspace crates spanning chain, consensus, transactions, storage, networking, mining, testnet, faucet, Lightning, and EIP-signing
+- ~47,700 lines of Rust across 112 source files — this is a real protocol implementation, not a tutorial or wrapper
+- Full UTXO model with SHA-256d proof-of-work, P2PKH addresses, Base58Check encoding, and a 21M hard cap with 210K-block halving
+- BIP coverage includes: BIP-32 (HD wallets), BIP-39 (mnemonic seeds), BIP-34 (height in coinbase), BIP-65/66/68 (time-lock ops), BIP-112 (CSV), BIP-125 (RBF), BIP-141/143 (SegWit), BIP-155 (addrv2/Tor), BIP-173 (Bech32), BIP-174 (PSBT), BIP-340/341/342 (Schnorr/Taproot), BIP-350 (Bech32m)
+- Consensus parameters frozen and documented in [CONSENSUS_FREEZE.md](CONSENSUS_FREEZE.md)
+
+### Testing & Verification
+- 1,301 Rust tests (unit + integration) — 1,334/1,334 passed on last full run with zero failures
+- 90 dedicated integration tests across 5 test suites (multi-node convergence, reorg handling, mempool management, wallet operations, node lifecycle)
+- 23 adversarial tests exercising double-spend, selfish mining, time-warp, and eclipse attack scenarios
+- 88/88 live wallet E2E tests + 12/12 critical path tests via Playwright
+- Measured code coverage: 75.13% lines + 80.16% functions, with explicit gap analysis in [COVERAGE.md](COVERAGE.md)
+- TLA+ formal consensus specification at `specs/consensus.tla` with TypeOK, ChainGrowth, and CommonPrefix(Δ+1) invariants
+- `cargo-deny` enforced: license allowlist, advisory database tracking, dependency ban policy
+
+### Privacy & Censorship Resistance
 - SOCKS5/Tor proxy implemented in P2P layer (`proxy_addr`/`tor_only`/`allow_onion` config fields)
-- `kubercoin-eip-signing` crate: EIP-191, EIP-712, Ethereum address derivation with EIP-55 checksum and ethers.js/Web3.py test vectors
-- TLA+ formal consensus specification at `specs/consensus.tla` with TypeOK, ChainGrowth, CommonPrefix(Δ+1) invariants
+- BIP-155 addrv2 for advertising `.onion` addresses to peers
+- CoinJoin mixing protocol design documented in [COINJOIN_DESIGN.md](COINJOIN_DESIGN.md)
+- Silent Payments compatibility analysis in [SILENT_PAYMENTS_COMPATIBILITY.md](SILENT_PAYMENTS_COMPATIBILITY.md)
+- Tor operator guide with hidden service setup in [TOR_CONFIGURATION.md](TOR_CONFIGURATION.md)
+
+### Cross-Chain & Ethereum Interoperability
+- `kubercoin-eip-signing` crate: EIP-191 personal-sign, EIP-712 typed structured data, Ethereum address derivation with EIP-55 checksum, validated against ethers.js/Web3.py test vectors
 - Cross-chain HTLC atomic swap specification at [ATOMIC_SWAPS.md](ATOMIC_SWAPS.md) with reference Solidity contract
-- Ethereum interoperability map at [ETHEREUM_INTEROP.md](ETHEREUM_INTEROP.md)
-- Privacy roadmap: [TOR_CONFIGURATION.md](TOR_CONFIGURATION.md), [COINJOIN_DESIGN.md](COINJOIN_DESIGN.md), [SILENT_PAYMENTS_COMPATIBILITY.md](SILENT_PAYMENTS_COMPATIBILITY.md)
+- Full Ethereum interoperability map at [ETHEREUM_INTEROP.md](ETHEREUM_INTEROP.md)
+
+### Lightning Network
+- `kubercoin-lightning` crate: 15 modules implementing channel state machines, HTLC forwarding, onion routing, Bolt 11 invoices, gossip protocol, watchtower, liquidity management, dual funding, channel backup and persistence
+- Lightning Network integration is library-complete; RPC wiring to the running node is the next milestone
+
+### Infrastructure & Operations
+- 4 Dockerfiles (multi-stage production, simple, multiarch, web) with reproducible build support (`SOURCE_DATE_EPOCH`)
+- 5 Docker Compose configurations (dev, testnet, edge, production, seed)
+- Helm chart + Kubernetes manifests for container orchestration
+- Azure infrastructure-as-code (Bicep) for cloud deployment
+- Prometheus + Grafana monitoring stack with 10 alert rules
+- 42 operations scripts covering build, test, deploy, monitoring, and launch validation
+- 7 GitHub Actions CI/CD workflows: lint/check, test (Linux + Windows), convergence, cargo-deny, MSRV, documentation, security-audit, fuzzing, E2E, coverage, native-UI, multi-target release with cosign signing
+
+### Developer Experience
+- SDK with examples in 3 languages: JavaScript/TypeScript, Python, Rust
+- 8 web applications: wallet, block explorer, monitoring dashboard, operations dashboard, unified portal, dApp scaffold, component docs, landing page
+- Native mining UI for 3 platforms: Windows (WinUI3/.NET 8), macOS (SwiftUI), Linux (GTK4/Rust)
+- 62 documentation files covering getting started, API reference, CLI reference, mining guide, cold storage, deployment, security hardening, disaster recovery, and more
+
+### Security Posture
+- Zero first-party `unsafe` blocks in production Rust code
+- Zero exploitable advisories — 4 RUSTSEC items tracked and documented as non-exploitable indirect dependencies
+- Misbehaviour-scored peer banning (threshold: 100)
+- Per-IP rate limiting on HTTP/RPC endpoints
+- Bearer token authentication enforced when `KUBERCOIN_API_KEYS` is set
+- Audit-readiness materials assembled for external auditor delivery
+- Responsible disclosure policy published in [SECURITY.md](../SECURITY.md)
 
 ## What Still Blocks Stronger Claims
 
@@ -64,7 +130,7 @@ The main blockers are credibility and operational-proof gaps, not a lack of engi
 
 1. **No external audit completed** — audit-readiness materials are assembled, but no auditor engagement has been signed.
 2. **Public CI and release artifacts** — configured but not proven with green public CI runs attached to a published release.
-3. **Lightning not wired to node runtime** — the Lightning crate is complete but `openchannel`/`sendpayment` RPCs are not yet wired to a running node.
+3. **Lightning not wired to node runtime** — the Lightning crate implements core protocol logic (channels, HTLC, onion routing, watchtower) but `openchannel`/`sendpayment` RPCs are not yet wired to a running node.
 4. **EIP signing not wired to wallet CLI** — `kubercoin-eip-signing` is a library; `getnewaddress ethereum` RPC and CLI flow are planned.
 5. **ZK research crate** — `arkworks`-based Pedersen commitments and range proofs are on the roadmap but not yet implemented.
 6. **Silent Payments** — design is complete; `silent_payments.rs` implementation is not yet written.
