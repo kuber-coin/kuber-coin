@@ -1,0 +1,41 @@
+# docker-compose.seed.yml — Single seed node for local testing of Azure config
+#
+# Mirrors the setup that cloud-init.sh deploys to each Azure VM.
+# Use this to validate your node configuration before running `azd up`.
+#
+# Usage:
+#   docker compose -f docker-compose.seed.yml up --build
+#   docker compose -f docker-compose.seed.yml logs -f
+#   docker compose -f docker-compose.seed.yml down -v
+
+services:
+  seed1:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: kubercoin-seed1
+    restart: unless-stopped
+    ports:
+      - "18633:18633"   # P2P
+      - "8332:8332"     # JSON-RPC
+      - "8080:8080"     # HTTP REST API
+      - "9091:9091"     # Prometheus metrics
+    volumes:
+      - seed1-data:/data/kubercoin
+    environment:
+      RUST_LOG: info
+      KUBERCOIN_NETWORK: testnet
+      KUBERCOIN_P2P_ADDR: "0.0.0.0:18633"
+      KUBERCOIN_RPC_ADDR: "0.0.0.0:8332"
+      KUBERCOIN_API_AUTH_ENABLED: "false"
+      KUBERCOIN_ALLOW_INSECURE_NO_AUTH: "true"
+      # To connect to a remote seed: KUBERCOIN_INITIAL_PEERS: "<IP>:18633"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8332/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  seed1-data:

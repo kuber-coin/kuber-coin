@@ -1,0 +1,212 @@
+.card {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: var(--kc-radius-lg);
+  border: 1px solid var(--kc-glass-border);
+  background: var(--kc-panel-glass), var(--kc-panel);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--kc-gradient-blue);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--kc-radius-lg);
+  padding: 1px;
+  background: var(--kc-gradient-blue);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--kc-shadow-lg), var(--kc-glow-blue);
+  border-color: var(--kc-border-strong);
+  background: var(--kc-panel-glass), var(--kc-panel-strong);
+}
+
+.card.gold::before {
+  background: var(--kc-gradient-gold);
+}
+
+.card.gold::after {
+  background: var(--kc-gradient-gold);
+}
+
+.card.gold:hover {
+  box-shadow: var(--kc-shadow-lg), var(--kc-glow-gold);
+}
+
+.card.green::before {
+  background: var(--kc-gradient-green);
+}
+
+.card.green::after {
+  background: var(--kc-gradient-green);
+}
+
+.card.green:hover {
+  box-shadow: var(--kc-shadow-lg), 0 0 40px rgba(16, 185, 129, 0.4);
+}
+
+.card.purple::before {
+  background: var(--kc-gradient-purple);
+}
+
+.card.purple::after {
+  background: var(--kc-gradient-purple);
+}
+
+.card.purple:hover {
+  box-shadow: var(--kc-shadow-lg), 0 0 40px rgba(139, 92, 246, 0.4);
+}
+
+.iconWrapper {
+  margin-bottom: 1.25rem;
+}
+
+.icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  background: var(--kc-gradient-blue);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.icon::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 18px;
+  background: var(--kc-gradient-blue);
+  z-index: -1;
+  opacity: 0;
+  filter: blur(12px);
+  transition: opacity 0.4s ease;
+}
+
+.card:hover .icon {
+  transform: translateY(-4px) scale(1.1) rotate(-5deg);
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.card:hover .icon::after {
+  opacity: 1;
+}
+
+.gold .icon {
+  background: var(--kc-gradient-gold);
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.gold .icon::after {
+  background: var(--kc-gradient-gold);
+}
+
+.card.gold:hover .icon {
+  box-shadow: 0 12px 32px rgba(251, 191, 36, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.green .icon {
+  background: var(--kc-gradient-green);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.green .icon::after {
+  background: var(--kc-gradient-green);
+}
+
+.card.green:hover .icon {
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.purple .icon {
+  background: var(--kc-gradient-purple);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.purple .icon::after {
+  background: var(--kc-gradient-purple);
+}
+
+.card.purple:hover .icon {
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.value {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--kc-text-bright);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--kc-text-bright) 0%, var(--kc-text) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+.card:hover .value {
+  transform: scale(1.05);
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--kc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.3s ease;
+}
+
+.card:hover .label {
+  color: var(--kc-text);
+}
+
+.trend {
+  font-size: 0.85rem;
+  color: var(--kc-good);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}

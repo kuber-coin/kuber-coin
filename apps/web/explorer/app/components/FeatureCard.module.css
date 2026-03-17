@@ -1,0 +1,165 @@
+.card {
+  position: relative;
+  padding: 2.5rem 2rem;
+  border-radius: var(--kc-radius-lg);
+  border: 1px solid var(--kc-glass-border);
+  background: var(--kc-panel-glass), var(--kc-panel);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 100%;
+  height: 3px;
+  background: var(--kc-gradient-blue);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: var(--kc-shadow-xl), var(--kc-glow-blue);
+  border-color: var(--kc-border-strong);
+  background: var(--kc-panel-glass), var(--kc-panel-strong);
+}
+
+.card.gold::before {
+  background: var(--kc-gradient-gold);
+}
+
+.card.gold::after {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+}
+
+.card.gold:hover {
+  box-shadow: var(--kc-shadow-xl), var(--kc-glow-gold);
+}
+
+.card.purple::before {
+  background: var(--kc-gradient-purple);
+}
+
+.card.purple::after {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+}
+
+.card.purple:hover {
+  box-shadow: var(--kc-shadow-xl), 0 0 60px rgba(139, 92, 246, 0.4);
+}
+
+.iconCircle {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--kc-gradient-blue);
+  box-shadow: 0 12px 36px rgba(59, 130, 246, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.iconCircle::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--kc-gradient-blue);
+  z-index: -1;
+  opacity: 0;
+  filter: blur(16px);
+  transition: opacity 0.5s ease;
+}
+
+.card:hover .iconCircle {
+  transform: scale(1.15) rotate(-10deg) translateY(-8px);
+  box-shadow: 0 20px 50px rgba(59, 130, 246, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.card:hover .iconCircle::before {
+  opacity: 1;
+}
+
+.gold .iconCircle {
+  background: var(--kc-gradient-gold);
+  box-shadow: 0 12px 36px rgba(251, 191, 36, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.gold .iconCircle::before {
+  background: var(--kc-gradient-gold);
+}
+
+.card.gold:hover .iconCircle {
+  box-shadow: 0 20px 50px rgba(251, 191, 36, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.purple .iconCircle {
+  background: var(--kc-gradient-purple);
+  box-shadow: 0 12px 36px rgba(139, 92, 246, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.purple .iconCircle::before {
+  background: var(--kc-gradient-purple);
+}
+
+.card.purple:hover .iconCircle {
+  box-shadow: 0 20px 50px rgba(139, 92, 246, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  color: var(--kc-text-bright);
+  letter-spacing: -0.02em;
+  transition: all 0.3s ease;
+}
+
+.card:hover .title {
+  transform: translateY(-2px);
+  color: var(--kc-text-bright);
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--kc-muted);
+  line-height: 1.7;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.card:hover .description {
+  color: var(--kc-text);
+}

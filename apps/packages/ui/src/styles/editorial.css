@@ -1,0 +1,11 @@
+/* Editorial typography and spacing helpers */
+.kc-editorial-title {
+  font-family: var(--kc-font-display);
+  letter-spacing: -0.04em;
+  color: var(--kc-text-bright);
+}
+
+.kc-editorial-copy {
+  color: var(--kc-muted-strong);
+  line-height: 1.8;
+}

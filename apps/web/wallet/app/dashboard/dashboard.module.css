@@ -1,0 +1,688 @@
+.container {
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0a0a0f 0%, #1a0f2e 100%);
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.greeting {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  min-width: 280px;
+}
+
+.searchIcon {
+  margin-right: 0.5rem;
+  opacity: 0.5;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.username {
+  color: #fff;
+  font-weight: 500;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.sectionHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.sectionSubtext {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1.5rem 0;
+}
+
+.seeAllLink,
+.seeMore {
+  color: #8B5CF6;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.seeAllLink:hover,
+.seeMore:hover {
+  color: #A78BFA;
+}
+
+.linkAccountsSection {
+  margin-bottom: 1rem;
+}
+
+.accountCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.accountCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.accountCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.accountCard:hover::before {
+  opacity: 1;
+}
+
+.accountCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+}
+
+.accountIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.accountInfo {
+  flex: 1;
+}
+
+.accountName {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.accountBalance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.balanceLabel {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.balanceAmount {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.addAccountBtn {
+  background: rgba(139, 92, 246, 0.1);
+  border: 2px dashed rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 140px;
+}
+
+.addAccountBtn:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.plusIcon {
+  font-size: 2rem;
+  color: #8B5CF6;
+}
+
+.portfolioSection {
+  margin-bottom: 1rem;
+}
+
+.portfolioStats {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.walletStatsCard {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+}
+
+.walletStatsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.walletStatsHeader h3 {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.periodSelect {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.chartTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+
+.chartTab {
+  flex: 1;
+  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chartTab:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.activeTab {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: #fff !important;
+}
+
+.chartArea {
+  margin-top: 1rem;
+}
+
+.marketSection {
+  margin-bottom: 1rem;
+}
+
+.marketTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.marketTable thead th {
+  text-align: left;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+.marketTable tbody tr {
+  border-bottom: 1px solid rgba(139, 92, 246, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.marketTable tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+  transform: translateX(4px);
+}
+
+.marketTable tbody td {
+  padding: 1rem;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.coinCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.coinIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.coinName {
+  font-weight: 600;
+  color: #fff;
+}
+
+.coinSymbol {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.miniChart {
+  font-size: 1.5rem;
+}
+
+.positive {
+  color: #10B981;
+  font-weight: 600;
+}
+
+.negative {
+  color: #EF4444;
+  font-weight: 600;
+}
+
+.balanceCard {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%) !important;
+  border: none !important;
+  padding: 0.5rem;
+}
+
+.balanceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.balanceUsd {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.balanceMain {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.balanceCurrency {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.balanceChange {
+  margin-bottom: 1.5rem;
+}
+
+.visaCard {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.visaLogo {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.cardNumber {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  margin-bottom: 1.5rem;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cardLabel {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.5px;
+}
+
+.cardValue {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.visaToggle {
+  width: 40px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggleSwitch {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  transition: all 0.3s;
+}
+
+.actionButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.transactionsCard {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h3 {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.transactionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transactionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.transactionItem:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.txLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.txIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.txInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.txCoin {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.txAction {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.txRight {
+  text-align: right;
+}
+
+.txAmount {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.txDate {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+}
+
+.newsCard {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+}
+
+.newsFilter {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.newsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.newsItem {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.newsItem:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.newsIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.newsContent {
+  flex: 1;
+}
+
+.newsTitle {
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.newsMeta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.newsSource {
+  color: #8B5CF6;
+  font-weight: 500;
+}
+
+.newsTime {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 1200px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+  }
+
+  .rightColumn {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: grid;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .headerRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .searchBox {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .accountCards {
+    grid-template-columns: 1fr;
+  }
+
+  .greeting {
+    font-size: 1.5rem;
+  }
+}

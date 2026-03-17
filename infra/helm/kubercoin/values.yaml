@@ -1,0 +1,157 @@
+# Default values for kubercoin
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: kubercoin/node
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8634"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  api:
+    port: 8080
+    targetPort: 8634
+  rpc:
+    port: 8332
+    targetPort: 8634
+  p2p:
+    type: LoadBalancer
+    port: 8633
+    targetPort: 8633
+  metrics:
+    port: 9091
+    targetPort: 8634
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: api.kubercoin.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: kubercoin-tls
+      hosts:
+        - api.kubercoin.local
+
+resources:
+  limits:
+    cpu: 4000m
+    memory: 8Gi
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  enabled: true
+  storageClass: "standard"
+  accessMode: ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+config:
+  network: mainnet
+  logLevel: info
+  mining:
+    enabled: false
+    threads: 1
+  peers: []
+
+env: []
+  # - name: KUBERCOIN_LOG_LEVEL
+  #   value: debug
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 8634
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 8634
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 30s
+  grafana:
+    enabled: true
+    adminPassword: "admin"
+    datasources:
+      enabled: true
+    dashboards:
+      enabled: true
+    service:
+      type: LoadBalancer
+      port: 3000
+
+backup:
+  enabled: false
+  schedule: "0 2 * * *"  # 2 AM daily
+  retention: 30
+  s3:
+    bucket: ""
+    region: us-east-1
+  gcs:
+    bucket: ""
+  azure:
+    container: ""

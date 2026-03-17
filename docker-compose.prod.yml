@@ -1,0 +1,64 @@
+# Production-focused overrides.
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.production up -d
+#
+# Goals:
+# - Keep the network permissionless (anyone can run nodes/mine/submit tx via P2P)
+# - Minimize exposed control-plane surfaces (RPC/metrics/internal APIs)
+# - Require real secrets (no insecure defaults)
+
+services:
+  node:
+    # Only expose P2P publicly. Keep RPC/REST/WS/Metrics internal to the compose network.
+    ports:
+      - "8633:8633"  # P2P network
+    environment:
+      RUST_LOG: ${RUST_LOG:-info}
+      KUBERCOIN_NETWORK: ${KUBERCOIN_NETWORK:?Set KUBERCOIN_NETWORK in .env.production (e.g., mainnet)}
+      KUBERCOIN_RPC_USER: ${RPC_USER:?Set RPC_USER in .env.production}
+      KUBERCOIN_RPC_PASSWORD: ${RPC_PASSWORD:?Set RPC_PASSWORD in .env.production}
+      KUBERCOIN_API_AUTH_ENABLED: "true"
+      KUBERCOIN_API_KEYS: ${KUBERCOIN_API_KEYS:?Set KUBERCOIN_API_KEYS in .env.production}
+      KUBERCOIN_EXPERIMENTAL_API: "0"
+      # Turn off demo tuning by default in production.
+      KUBERCOIN_DEMO_PEERS: ${KUBERCOIN_DEMO_PEERS:-0}
+      KUBERCOIN_DEMO_PING_INTERVAL_SECS: ${KUBERCOIN_DEMO_PING_INTERVAL_SECS:-10}
+
+  explorer-web:
+    # Public web UI is OK.
+    ports:
+      - "3200:3000"
+
+  wallet-web:
+    # Public web UI is OK (it proxies server-side to the internal node API).
+    ports:
+      - "3250:3000"
+
+  ops-web:
+    # Strongly recommended to keep this behind a VPN / allowlist / reverse-proxy auth.
+    ports:
+      - "3300:3000"
+
+  prometheus:
+    # Do not publish Prometheus to the public Internet.
+    ports: []
+
+  grafana:
+    # Do not publish Grafana to the public Internet.
+    ports: []
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:?Set GRAFANA_USER in .env.production}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?Set GRAFANA_PASSWORD in .env.production}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+
+  postgres:
+    # Optional. Keep internal.
+    ports: []
+    environment:
+      POSTGRES_DB: kubercoin
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env.production}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+
+  redis:
+    # Optional. Keep internal.
+    ports: []

@@ -1,0 +1,232 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubercoin-metrics
+  namespace: kubercoin
+  labels:
+    app: kubercoin
+spec:
+  selector:
+    matchLabels:
+      app: kubercoin
+      component: node
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: kubercoin
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    scrape_configs:
+      - job_name: 'kubercoin'
+        static_configs:
+          - targets: ['kubercoin-metrics:9091']
+            labels:
+              service: 'kubercoin-node'
+        
+        metrics_path: /metrics
+        scrape_interval: 30s
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: kubercoin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "prometheus"
+  template:
+    metadata:
+      labels:
+        app: "prometheus"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.52.0
+        ports:
+        - containerPort: 9090
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+            ephemeral-storage: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+            ephemeral-storage: "5Gi"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/prometheus
+        - name: data
+          mountPath: /prometheus
+        args:
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--storage.tsdb.path=/prometheus'
+          - '--storage.tsdb.retention.time=30d'
+      volumes:
+      - name: config
+        configMap:
+          name: prometheus-config
+      - name: data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: kubercoin
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9090
+    targetPort: 9090
+  selector:
+    app: prometheus
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: kubercoin
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: kubercoin
+data:
+  kubercoin-dashboard.json: |
+    {
+      "dashboard": {
+        "title": "KuberCoin Node Metrics",
+        "panels": [
+          {
+            "title": "Block Height",
+            "targets": [{"expr": "kubercoin_block_height"}],
+            "type": "graph"
+          },
+          {
+            "title": "Mempool Size",
+            "targets": [{"expr": "kubercoin_mempool_size"}],
+            "type": "graph"
+          },
+          {
+            "title": "Peer Count",
+            "targets": [{"expr": "kubercoin_peers"}],
+            "type": "graph"
+          },
+          {
+            "title": "WebSocket Connections",
+            "targets": [{"expr": "kubercoin_ws_connections"}],
+            "type": "graph"
+          },
+          {
+            "title": "HTTP Requests",
+            "targets": [{"expr": "rate(kubercoin_http_requests_total[5m])"}],
+            "type": "graph"
+          },
+          {
+            "title": "UTXO Count",
+            "targets": [{"expr": "kubercoin_utxo_count"}],
+            "type": "stat"
+          },
+          {
+            "title": "Total Value Locked",
+            "targets": [{"expr": "kubercoin_total_value_satoshis"}],
+            "type": "stat"
+          },
+          {
+            "title": "Node Uptime",
+            "targets": [{"expr": "kubercoin_uptime_seconds"}],
+            "type": "stat"
+          }
+        ]
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: kubercoin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: grafana
+        image: grafana/grafana:10.4.2
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+            ephemeral-storage: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+            ephemeral-storage: "5Gi"
+        env:
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: "admin"  # Change in production
+        - name: GF_INSTALL_PLUGINS
+          value: ""
+        volumeMounts:
+        - name: datasources
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: dashboards-config
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: dashboards
+          mountPath: /var/lib/grafana/dashboards
+      volumes:
+      - name: datasources
+        configMap:
+          name: grafana-datasources
+      - name: dashboards-config
+        configMap:
+          name: grafana-dashboards
+      - name: dashboards
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: kubercoin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    app: grafana

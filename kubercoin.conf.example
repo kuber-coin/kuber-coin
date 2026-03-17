@@ -1,0 +1,42 @@
+# KuberCoin Node Configuration
+# Copy this file to kubercoin.conf and adjust as needed.
+# Environment variables override config file values.
+
+# Network mode: mainnet | testnet | regtest
+network = mainnet
+
+# P2P port (default: 8633 mainnet, 18633 testnet, 18744 regtest)
+# port = 8633
+
+# Disable P2P networking (solo/testing mode)
+# no_p2p = false
+
+# Data directory for chain state
+# data_dir = /data/kubercoin
+
+# HTTP REST API port (auto-selected 8080-8095 if unset)
+# http_port = 8080
+
+# WebSocket notification port (auto-selected 9090-9099 if unset)
+# ws_port = 9090
+
+# Comma-separated API keys for RPC authentication
+# api_keys = key1,key2
+
+# Rate limit: max RPC calls per minute per client
+# rate_limit_per_min = 60
+
+# Maximum number of peer connections
+# max_peers = 125
+
+# DNS seed nodes (comma-separated; defaults per network)
+# seeds = seed1.kuber-coin.com,seed2.kuber-coin.com
+
+# Logging level: error | warn | info | debug | trace
+# log_level = info
+
+# Enable Prometheus metrics endpoint (port 9091)
+# metrics = true
+
+# Test mode (relaxed rate limits, bootstrap wallets)
+# test_mode = false

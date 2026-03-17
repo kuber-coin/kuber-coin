@@ -1,0 +1,26 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--kc-bg0);
+}
+
+.main {
+  flex: 1;
+  margin-left: 280px;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 100vh;
+}
+
+.main.expanded {
+  margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+  }
+
+  .main.expanded {
+    margin-left: 0;
+  }
+}

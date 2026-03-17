@@ -1,0 +1,97 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+		mainGroup = {
+			isa = PBXGroup;
+			children = (
+				KuberCoinMiner,
+			);
+			sourceTree = "<group>";
+		};
+		KuberCoinMiner = {
+			isa = PBXGroup;
+			children = (
+				KuberCoinMinerApp.swift,
+				ContentView.swift,
+				Views,
+				ViewModels,
+				Models,
+				Services,
+			);
+			path = KuberCoinMiner;
+			sourceTree = "<group>";
+		};
+		Views = {
+			isa = PBXGroup;
+			children = (
+				DashboardView.swift,
+				DevicesView.swift,
+				OverclockingView.swift,
+				PoolsView.swift,
+				ChartsView.swift,
+				AlertsView.swift,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		ViewModels = {
+			isa = PBXGroup;
+			children = (
+				DashboardViewModel.swift,
+				DevicesViewModel.swift,
+				OverclockingViewModel.swift,
+				PoolsViewModel.swift,
+				ChartsViewModel.swift,
+				AlertsViewModel.swift,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		Models = {
+			isa = PBXGroup;
+			children = (
+				Device.swift,
+				GpuDevice.swift,
+				MiningPool.swift,
+				AlertRule.swift,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		Services = {
+			isa = PBXGroup;
+			children = (
+				MiningService.swift,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+	};
+	rootObject = {
+		isa = PBXProject;
+		attributes = {
+			BuildIndependentTargetsInParallel = 1;
+			LastSwiftUpdateCheck = 1500;
+			LastUpgradeCheck = 1500;
+		};
+		buildConfigurationList = BuildConfigurationList;
+		compatibilityVersion = "Xcode 14.0";
+		developmentRegion = en;
+		hasScannedForEncodings = 0;
+		knownRegions = (
+			en,
+			Base,
+		);
+		mainGroup = mainGroup;
+		productRefGroup = Products;
+		projectDirPath = "";
+		projectRoot = "";
+		targets = (
+			KuberCoinMiner,
+		);
+	};
+}

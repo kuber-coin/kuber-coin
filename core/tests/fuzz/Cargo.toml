@@ -1,0 +1,59 @@
+[package]
+name = "kubercoin-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+tx = { path = "../../core/core/tx" }
+chain = { path = "../../core/core/chain" }
+node = { package = "kubercoin-node", path = "../../core/node" }
+consensus = { path = "../../core/core/consensus" }
+bincode = "1"
+serde_json = "1"
+
+[[bin]]
+name = "fuzz_transaction"
+path = "fuzz_targets/fuzz_transaction.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_script"
+path = "fuzz_targets/fuzz_script.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_block"
+path = "fuzz_targets/fuzz_block.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_p2p_message"
+path = "fuzz_targets/fuzz_p2p_message.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_psbt"
+path = "fuzz_targets/fuzz_psbt.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_difficulty"
+path = "fuzz_targets/fuzz_difficulty.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_address"
+path = "fuzz_targets/fuzz_address.rs"
+test = false
+doc = false

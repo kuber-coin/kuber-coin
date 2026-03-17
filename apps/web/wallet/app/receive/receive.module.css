@@ -1,0 +1,264 @@
+.container {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--kc-muted);
+  margin: 8px 0 0 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  color: var(--kc-text-bright);
+}
+
+.addressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.qrPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.qrCode {
+  width: 200px;
+  height: 200px;
+  background: white;
+  border: 2px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.qrIcon {
+  font-size: 64px;
+}
+
+.qrCode p {
+  margin: 0;
+  color: var(--kc-muted);
+  font-weight: 600;
+}
+
+.addressDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--kc-text-bright);
+}
+
+.addressBox,
+.uriDisplay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.address,
+.uri {
+  flex: 1;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-accent-blue);
+  word-break: break-all;
+}
+
+.addressActions {
+  display: flex;
+  gap: 12px;
+}
+
+.customizeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--kc-text-bright);
+}
+
+.sectionDesc {
+  font-size: 14px;
+  color: var(--kc-muted);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.uriBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recentTxs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.txItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  transition: all 0.2s ease;
+}
+
+.txItem:hover {
+  border-color: var(--kc-accent-blue);
+  background: rgba(96, 165, 250, 0.05);
+}
+
+.txIcon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+}
+
+.txInfo {
+  flex: 1;
+}
+
+.txAmount {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--kc-success);
+  margin-bottom: 4px;
+}
+
+.txFrom {
+  font-size: 13px;
+  color: var(--kc-muted);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.txMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.txTime {
+  font-size: 12px;
+  color: var(--kc-muted);
+}
+
+.info {
+  padding: 20px;
+  background: rgba(96, 165, 250, 0.05);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: var(--kc-radius);
+}
+
+.info h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--kc-accent-blue);
+}
+
+.info ul {
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: disc;
+}
+
+.info li {
+  font-size: 13px;
+  color: var(--kc-muted);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .addressActions {
+    flex-direction: column;
+  }
+}

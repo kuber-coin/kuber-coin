@@ -1,0 +1,13 @@
+{
+  "name": "kubercoin-sdk-example",
+  "version": "1.0.0",
+  "description": "KuberCoin JavaScript SDK example",
+  "type": "module",
+  "main": "kubercoin_example.js",
+  "scripts": {
+    "start": "node kubercoin_example.js"
+  },
+  "keywords": ["kubercoin", "blockchain", "rpc"],
+  "author": "",
+  "license": "MIT"
+}

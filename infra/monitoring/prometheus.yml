@@ -1,0 +1,61 @@
+# Prometheus Configuration for Kubercoin
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'kubercoin-testnet'
+    environment: 'docker'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "/etc/prometheus/alerts.yml"
+
+scrape_configs:
+  # Kubercoin Node Metrics
+  - job_name: 'kubercoin-node'
+    static_configs:
+      - targets: ['node:8634']
+        labels:
+          service: 'kubercoin'
+          component: 'node'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Prometheus Self-Monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'monitoring'
+          component: 'prometheus'
+
+  # Docker Container Metrics (if cAdvisor is enabled)
+  # - job_name: 'cadvisor'
+  #   static_configs:
+  #     - targets: ['cadvisor:8080']
+  #       labels:
+  #         service: 'monitoring'
+  #         component: 'cadvisor'
+
+  # Node Exporter (if enabled)
+  # - job_name: 'node-exporter'
+  #   static_configs:
+  #     - targets: ['node-exporter:9100']
+  #       labels:
+  #         service: 'monitoring'
+  #         component: 'node-exporter'
+
+# Remote write configuration (for long-term storage)
+# remote_write:
+#   - url: "https://prometheus-remote-write-endpoint/api/v1/write"
+#     basic_auth:
+#       username: ""
+#       password: ""

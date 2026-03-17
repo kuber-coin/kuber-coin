@@ -1,0 +1,22 @@
+[package]
+name = "testnet"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "KuberCoin testnet configuration and genesis blocks"
+
+[dependencies]
+chain = { path = "../chain" }
+consensus = { path = "../consensus" }
+tx = { path = "../tx" }
+sha2.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+hex.workspace = true
+
+[lints]
+workspace = true

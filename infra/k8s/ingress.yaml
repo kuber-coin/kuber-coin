@@ -1,0 +1,329 @@
+# KuberCoin Kubernetes Ingress Configuration
+# Domain: kuber-coin.com
+#
+# Prerequisites:
+# - cert-manager installed for TLS certificates
+# - nginx-ingress or similar ingress controller
+#
+# Usage:
+#   kubectl apply -f ingress.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubercoin-ingress
+  namespace: kubercoin
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    # Rate limiting
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/limit-connections: "50"
+    # Security headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-XSS-Protection "1; mode=block" always;
+      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+spec:
+  tls:
+    - hosts:
+        - kuber-coin.com
+        - www.kuber-coin.com
+        - wallet.kuber-coin.com
+        - explorer.kuber-coin.com
+        - node.kuber-coin.com
+        - rpc.kuber-coin.com
+        - docs.kuber-coin.com
+        - dapp.kuber-coin.com
+      secretName: kubercoin-tls
+  rules:
+    # =======================================================================
+    # MAIN LANDING PAGE - kuber-coin.com
+    # =======================================================================
+    - host: kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-unified
+                port:
+                  number: 3000
+
+    - host: www.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-unified
+                port:
+                  number: 3000
+
+    # =======================================================================
+    # WALLET UI - wallet.kuber-coin.com
+    # =======================================================================
+    - host: wallet.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: wallet-web
+                port:
+                  number: 3000
+
+    # =======================================================================
+    # EXPLORER UI - explorer.kuber-coin.com
+    # =======================================================================
+    - host: explorer.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: explorer-web
+                port:
+                  number: 3000
+
+    # =======================================================================
+    # NODE API - node.kuber-coin.com
+    # =======================================================================
+    - host: node.kuber-coin.com
+      http:
+        paths:
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: node
+                port:
+                  number: 9090
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: node
+                port:
+                  number: 8081
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: node
+                port:
+                  number: 8081
+
+    # =======================================================================
+    # RPC API - rpc.kuber-coin.com
+    # =======================================================================
+    - host: rpc.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: node
+                port:
+                  number: 8332
+
+    # =======================================================================
+    # DOCUMENTATION - docs.kuber-coin.com
+    # =======================================================================
+    - host: docs.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: docs-web
+                port:
+                  number: 3000
+
+    # =======================================================================
+    # DAPP - dapp.kuber-coin.com
+    # =======================================================================
+    - host: dapp.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-unified
+                port:
+                  number: 3000
+
+---
+# WebSocket Ingress (separate for proper upgrade handling)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubercoin-websocket-ingress
+  namespace: kubercoin
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$remote_addr"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+spec:
+  tls:
+    - hosts:
+        - node.kuber-coin.com
+      secretName: kubercoin-ws-tls
+  rules:
+    - host: node.kuber-coin.com
+      http:
+        paths:
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: node
+                port:
+                  number: 9090
+
+---
+# RPC Ingress with Basic Auth
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubercoin-rpc-ingress
+  namespace: kubercoin
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: kubercoin-rpc-auth
+    nginx.ingress.kubernetes.io/auth-realm: "KuberCoin RPC API"
+    nginx.ingress.kubernetes.io/limit-rps: "50"
+spec:
+  tls:
+    - hosts:
+        - rpc.kuber-coin.com
+      secretName: kubercoin-rpc-tls
+  rules:
+    - host: rpc.kuber-coin.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: node
+                port:
+                  number: 8332
+
+---
+# ClusterIssuer for Let's Encrypt
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: connect@kuber-coin.com
+    privateKeySecretRef:
+      name: letsencrypt-prod-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+
+---
+# Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-unified
+  namespace: kubercoin
+spec:
+  selector:
+    app: web-unified
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-web
+  namespace: kubercoin
+spec:
+  selector:
+    app: wallet-web
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: explorer-web
+  namespace: kubercoin
+spec:
+  selector:
+    app: explorer-web
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docs-web
+  namespace: kubercoin
+spec:
+  selector:
+    app: docs-web
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node
+  namespace: kubercoin
+spec:
+  selector:
+    app: kubercoin-node
+  ports:
+    - name: rpc
+      port: 8332
+      targetPort: 8332
+    - name: rest
+      port: 8081
+      targetPort: 8081
+    - name: websocket
+      port: 9090
+      targetPort: 9090
+    - name: p2p
+      port: 8633
+      targetPort: 8633
+    - name: metrics
+      port: 9091
+      targetPort: 9091

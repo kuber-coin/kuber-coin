@@ -1,0 +1,45 @@
+{
+  "name": "wallet-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3250",
+    "build": "next build",
+    "start": "next start -p 3250",
+    "lint": "next lint",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report test-results/html",
+    "test:e2e:critical": "playwright test --grep @critical",
+    "test:e2e:live": "playwright test --config playwright.live.config.ts",
+    "test:e2e:live:critical": "playwright test --config playwright.live.config.ts --grep @critical",
+    "test:e2e:live:report": "playwright show-report playwright-report-live",
+    "analyze": "cross-env ANALYZE=true next build",
+    "format:check": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "15.1.10",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^3.7.0",
+    "@kubercoin/ui": "file:./vendor/kubercoin-ui-1.0.0.tgz"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^15.1.10",
+    "@playwright/test": "^1.58.1",
+    "cross-env": "^7.0.3",
+    "@types/node": "^22",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.10",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5"
+  }
+}

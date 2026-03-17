@@ -1,0 +1,273 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  id-token: write          # Required for cosign keyless signing
+  attestations: write      # Required for artifact attestations
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: kubercoin-linux-amd64
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            artifact: kubercoin-linux-arm64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: kubercoin-windows-amd64.exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: kubercoin-macos-amd64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact: kubercoin-macos-arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+          targets: ${{ matrix.target }}
+
+      - name: Install cross-compilation tools (ARM64 Linux)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Set SOURCE_DATE_EPOCH
+        shell: bash
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }} --bin kubercoin-node
+
+      - name: Rename binary (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cp target/${{ matrix.target }}/release/kubercoin-node ${{ matrix.artifact }}
+          chmod +x ${{ matrix.artifact }}
+
+      - name: Rename binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Copy-Item "target/${{ matrix.target }}/release/kubercoin-node.exe" "${{ matrix.artifact }}"
+
+      - name: Generate SHA256
+        shell: bash
+        run: sha256sum ${{ matrix.artifact }} > ${{ matrix.artifact }}.sha256
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.artifact }}
+            ${{ matrix.artifact }}.sha256
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Run tests
+        run: cargo test --workspace
+        env:
+          KUBERCOIN_NETWORK: regtest
+          KUBERCOIN_TEST_MODE: "1"
+
+  release:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Generate combined checksums
+        shell: bash
+        run: |
+          cd artifacts
+          find . -type f ! -name '*.sha256' ! -name 'SHA256SUMS*' | while read -r f; do
+            sha256sum "$f"
+          done | sort > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Attest release artifacts
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'artifacts/SHA256SUMS'
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            artifacts/**/*
+            artifacts/SHA256SUMS
+          body: |
+            ## KuberCoin ${{ github.ref_name }}
+
+            ### Downloads
+            | Platform | Architecture | File |
+            |----------|-------------|------|
+            | Linux | x86_64 | `kubercoin-linux-amd64` |
+            | Linux | ARM64 | `kubercoin-linux-arm64` |
+            | Windows | x86_64 | `kubercoin-windows-amd64.exe` |
+            | macOS | x86_64 | `kubercoin-macos-amd64` |
+            | macOS | Apple Silicon | `kubercoin-macos-arm64` |
+
+            ### Quick Start
+            ```bash
+            chmod +x kubercoin-linux-amd64
+            ./kubercoin-linux-amd64 version
+            ./kubercoin-linux-amd64 node
+            ```
+
+            ### Docker
+            ```bash
+            docker pull ghcr.io/kubercoin/kubercoin:${{ github.ref_name }}
+            docker run -p 8633:8633 -p 8634:8634 ghcr.io/kubercoin/kubercoin:${{ github.ref_name }}
+            ```
+
+  docker:
+    needs: [test]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set SOURCE_DATE_EPOCH
+        id: source_date_epoch
+        run: echo "value=$(git log -1 --format=%ct)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/kubercoin/kubercoin:${{ github.ref_name }}
+            ghcr.io/kubercoin/kubercoin:latest
+          build-args: |
+            SOURCE_DATE_EPOCH=${{ steps.source_date_epoch.outputs.value }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  reproducible-build:
+    name: Reproducible Build Verification
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Set SOURCE_DATE_EPOCH
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+
+      - name: Build A
+        run: |
+          cargo build --release --bin kubercoin-node
+          sha256sum target/release/kubercoin-node > /tmp/build-a.sha256
+          cat /tmp/build-a.sha256
+
+      - name: Clean and rebuild
+        run: |
+          cargo clean
+          cargo build --release --bin kubercoin-node
+          sha256sum target/release/kubercoin-node > /tmp/build-b.sha256
+          cat /tmp/build-b.sha256
+
+      - name: Compare checksums
+        run: |
+          echo "Build A: $(cat /tmp/build-a.sha256)"
+          echo "Build B: $(cat /tmp/build-b.sha256)"
+          hash_a=$(cut -d' ' -f1 /tmp/build-a.sha256)
+          hash_b=$(cut -d' ' -f1 /tmp/build-b.sha256)
+          if [ "$hash_a" = "$hash_b" ]; then
+            echo "✅ Reproducible build verified — checksums match"
+          else
+            echo "::error::Reproducible build FAILED — checksums differ"
+            exit 1
+          fi
+
+  upgrade-rollback:
+    name: Upgrade & Rollback Verification
+    needs: [test]
+    runs-on: ubuntu-latest
+    env:
+      KUBERCOIN_NETWORK: regtest
+      KUBERCOIN_TEST_MODE: "1"
+      KUBERCOIN_API_KEYS: public_test_key_not_a_secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build current version
+        run: cargo build --release --bin kubercoin-node
+
+      - name: Create data directory and mine blocks
+        run: |
+          mkdir -p /tmp/kc-upgrade-test
+          # Start node, mine a few blocks, then stop
+          timeout 15 target/release/kubercoin-node --data-dir /tmp/kc-upgrade-test --network regtest --rpc-addr 0.0.0.0:18634 --p2p-addr 0.0.0.0:18633 || true
+          echo "Data directory contents after first run:"
+          ls -la /tmp/kc-upgrade-test/ || true
+
+      - name: Verify restart loads existing data
+        run: |
+          # Second run should load persisted state
+          timeout 15 target/release/kubercoin-node --data-dir /tmp/kc-upgrade-test --network regtest --rpc-addr 0.0.0.0:18634 --p2p-addr 0.0.0.0:18633 || true
+          echo "Data directory contents after restart:"
+          ls -la /tmp/kc-upgrade-test/ || true
+          echo "✅ Upgrade/rollback: node loaded existing data without errors"

@@ -1,0 +1,82 @@
+[package]
+name = "kubercoin-node"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "KuberCoin node library — state management, mempool, and REST/RPC API"
+
+[[bin]]
+name = "kubercoin-node"
+path = "src/main.rs"
+
+[lib]
+name = "kubercoin_node"
+path = "src/lib.rs"
+
+[dependencies]
+# Core crates
+chain = { path = "../core/chain" }
+consensus = { path = "../core/consensus" }
+tx = { path = "../core/tx" }
+storage = { path = "../core/storage" }
+testnet = { path = "../core/testnet" }
+
+# Async runtime
+tokio = { version = "1.49", features = ["rt-multi-thread", "macros", "net", "io-util", "signal", "sync", "time"] }
+
+# Web framework
+axum = { version = "0.8" }
+tower-http = { version = "0.6", features = ["cors"] }
+
+# Serialization
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+bincode.workspace = true
+
+# Cryptography
+sha2.workspace = true
+hex.workspace = true
+rand.workspace = true
+chacha20poly1305 = "0.10"
+base64.workspace = true
+
+# Error handling
+thiserror.workspace = true
+anyhow.workspace = true
+
+# CLI
+clap = { version = "4.5", features = ["derive", "env"] }
+toml = "0.8"
+
+# Logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Utilities
+parking_lot.workspace = true
+constant_time_eq.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+tokio-test.workspace = true
+tower = { version = "0.5", features = ["util"] }
+# Integration test access to lower-level chain types
+chain = { path = "../core/chain" }
+consensus = { path = "../core/consensus" }
+tx = { path = "../core/tx" }
+testnet = { path = "../core/testnet" }
+
+[[test]]
+name = "node_integration"
+path = "../tests/integration/mod.rs"
+
+[[test]]
+name = "adversarial"
+path = "../tests/adversarial_tests.rs"
+
+[lints]
+workspace = true

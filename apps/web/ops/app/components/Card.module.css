@@ -1,0 +1,110 @@
+.card {
+  background: var(--kc-panel, rgba(15, 30, 60, 0.35));
+  border: 1px solid var(--kc-border, rgba(59, 130, 246, 0.12));
+  border-radius: var(--kc-radius, 20px);
+  backdrop-filter: blur(16px);
+  transition: all 0.3s ease;
+}
+
+.default {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.glass {
+  background: var(--kc-panel-glass, linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%));
+  border: 1px solid var(--kc-glass-border, rgba(255, 255, 255, 0.1));
+}
+
+.gradient {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--kc-gradient-blue, linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #06b6d4 100%));
+}
+
+.elevated {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Padding */
+.padding-none {
+  padding: 0;
+}
+
+.padding-sm {
+  padding: 16px;
+}
+
+.padding-md {
+  padding: 24px;
+}
+
+.padding-lg {
+  padding: 32px;
+}
+
+/* Hover effects */
+.hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:active {
+  transform: translateY(0);
+}
+
+/* Card sections */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--kc-text);
+}
+
+.headerSubtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--kc-muted);
+}
+
+.headerAction {
+  margin-left: 16px;
+}
+
+.body {
+  flex: 1;
+}
+
+.footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}

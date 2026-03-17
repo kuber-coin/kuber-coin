@@ -1,0 +1,146 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  isolation: isolate;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.button:hover::before {
+  opacity: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  opacity: 0;
+  filter: blur(20px);
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+
+.button:hover .glow {
+  opacity: 1;
+}
+
+/* Primary Variant */
+.primary {
+  background: var(--kc-gradient-blue);
+  color: white;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
+
+.primary .glow {
+  background: var(--kc-gradient-blue);
+}
+
+.primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.6);
+}
+
+.primary:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Gold Variant */
+.gold {
+  background: var(--kc-gradient-gold);
+  color: #0a0e1a;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+  font-weight: 800;
+}
+
+.gold .glow {
+  background: var(--kc-gradient-gold);
+}
+
+.gold:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 28px rgba(251, 191, 36, 0.6);
+}
+
+.gold:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Secondary Variant */
+.secondary {
+  background: var(--kc-panel-strong);
+  backdrop-filter: blur(10px);
+  color: var(--kc-text);
+  border: 1px solid var(--kc-glass-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.secondary:hover {
+  transform: translateY(-2px);
+  border-color: var(--kc-border-strong);
+  background: var(--kc-panel-glass), var(--kc-panel-strong);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Ghost Variant */
+.ghost {
+  background: transparent;
+  color: var(--kc-text);
+  border: 1px solid var(--kc-border);
+}
+
+.ghost:hover {
+  background: var(--kc-glass);
+  border-color: var(--kc-border-strong);
+  transform: translateY(-2px);
+}
+
+/* Sizes */
+.sm {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+.md {
+  padding: 0.75rem 1.75rem;
+  font-size: 0.95rem;
+}
+
+.lg {
+  padding: 1rem 2.25rem;
+  font-size: 1.05rem;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.button:disabled:hover {
+  box-shadow: none;
+}

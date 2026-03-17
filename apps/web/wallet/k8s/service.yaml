@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-web
+  namespace: wallet-production
+  labels:
+    app: wallet-web
+    service: wallet-web
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: wallet-web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-web-headless
+  namespace: wallet-production
+  labels:
+    app: wallet-web
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: wallet-web

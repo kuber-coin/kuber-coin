@@ -1,0 +1,264 @@
+.container {
+  padding: 32px;
+  max-width: 1600px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.addressHash {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hash {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-text-bright);
+  word-break: break-all;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  color: var(--kc-text-bright);
+}
+
+.infoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.label {
+  font-size: 14px;
+  color: var(--kc-muted);
+  font-weight: 600;
+}
+
+.value {
+  font-size: 15px;
+  color: var(--kc-text-bright);
+  font-weight: 600;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.relative {
+  font-size: 13px;
+  color: var(--kc-muted);
+  font-weight: 400;
+}
+
+.qrSection {
+  padding: 24px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.qrSection h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--kc-text-bright);
+  text-align: center;
+}
+
+.qrPlaceholder {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 16px;
+  background: white;
+  border-radius: var(--kc-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+}
+
+.qrPlaceholder span {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+.qrPlaceholder p {
+  font-size: 10px;
+  color: #666;
+  margin: 0;
+  text-align: center;
+  word-break: break-all;
+}
+
+.txLink {
+  font-family: 'Courier New', monospace;
+  color: var(--kc-accent-blue);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.txLink:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.link {
+  color: var(--kc-accent-blue);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.received {
+  font-weight: 700;
+  color: var(--kc-success);
+}
+
+.sent {
+  font-weight: 700;
+  color: var(--kc-warning);
+}
+
+.time {
+  color: var(--kc-muted);
+  font-size: 14px;
+}
+
+.utxoList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 0;
+}
+
+.utxoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.utxoInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.utxoTxid {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-text-bright);
+}
+
+.utxoAmount {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--kc-accent-blue);
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .addressHash {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .infoItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .value {
+    align-items: flex-start;
+  }
+
+  .utxoItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,73 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+target/
+*.exe
+*.pdb
+*.bin
+*.zip
+
+# Azure / cloud tooling
+.azure/
+
+# JS build artifacts / dependencies
+**/node_modules/
+**/.next/
+**/dist/
+**/build/
+**/out/
+**/.turbo/
+**/.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+
+# Test data / non-build directories
+testdata/
+tmp/
+tests/
+tools/
+reports/
+regtest-data/
+test-results/
+test-console/
+data/
+wallets/
+.vs/
+*.json
+!Cargo.lock
+*.txt
+*.ps1
+*.sh
+justfile
+*.conf*
+*.log
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+*.log

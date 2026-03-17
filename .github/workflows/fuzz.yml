@@ -1,0 +1,56 @@
+name: Fuzz
+
+'on':
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'core/**'
+      - 'core/tests/fuzz/**'
+  schedule:
+    # Run nightly at 03:00 UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fuzz:
+    name: Fuzz ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - fuzz_transaction
+          - fuzz_script
+          - fuzz_block
+          - fuzz_p2p_message
+          - fuzz_psbt
+          - fuzz_difficulty
+          - fuzz_address
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: core/tests/fuzz
+
+      - name: Install cargo-fuzz
+        run: cargo install cargo-fuzz --locked
+
+      - name: Run fuzzer (${{ matrix.target }}, 5 min)
+        run: cargo fuzz run ${{ matrix.target }} -- -max_total_time=300
+        working-directory: core/tests/fuzz
+
+      - name: Upload crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-crashes-${{ matrix.target }}
+          path: core/tests/fuzz/artifacts/${{ matrix.target }}
+          retention-days: 30

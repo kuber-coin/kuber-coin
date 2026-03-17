@@ -1,0 +1,18 @@
+[package]
+name = "kubercoin-miner-gtk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gtk4 = "0.7"
+libadwaita = "0.5"
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

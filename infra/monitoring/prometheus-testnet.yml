@@ -1,0 +1,51 @@
+# Prometheus Configuration for KuberCoin Testnet Cluster (5 nodes)
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'kubercoin-testnet'
+    environment: 'docker'
+
+rule_files:
+  - "/etc/prometheus/alerts.yml"
+
+scrape_configs:
+  # Seed nodes
+  - job_name: 'kubercoin-node'
+    static_configs:
+      - targets: ['seed1:9091']
+        labels:
+          service: 'kubercoin'
+          role: 'seed'
+          instance_name: 'seed1'
+      - targets: ['seed2:9091']
+        labels:
+          service: 'kubercoin'
+          role: 'seed'
+          instance_name: 'seed2'
+      - targets: ['node1:9091']
+        labels:
+          service: 'kubercoin'
+          role: 'node'
+          instance_name: 'node1'
+      - targets: ['node2:9091']
+        labels:
+          service: 'kubercoin'
+          role: 'node'
+          instance_name: 'node2'
+      - targets: ['node3:9091']
+        labels:
+          service: 'kubercoin'
+          role: 'node'
+          instance_name: 'node3'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'monitoring'
+          component: 'prometheus'

@@ -1,0 +1,173 @@
+.container {
+  padding: 32px;
+  max-width: 1600px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--kc-muted);
+  margin: 8px 0 0 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.chartsGrid {
+  display: grid;
+  gap: 32px;
+  padding: 24px 0;
+}
+
+.chartSection {
+  width: 100%;
+}
+
+.chartTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  color: var(--kc-text-bright);
+}
+
+.donutSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.metricLabel {
+  font-size: 14px;
+  color: var(--kc-muted);
+}
+
+.metricValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--kc-text-bright);
+}
+
+.miningMetrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.distributionStats {
+  padding: 20px;
+}
+
+.distributionItem {
+  margin-bottom: 24px;
+}
+
+.distributionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--kc-text-bright);
+}
+
+.progressBar {
+  height: 32px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  transition: width 1s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.richlist {
+  padding: 20px 0;
+}
+
+.address {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-text-bright);
+}
+
+.balance {
+  font-weight: 700;
+  color: var(--kc-accent-blue);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metricsGrid,
+  .miningMetrics {
+    grid-template-columns: 1fr;
+  }
+}

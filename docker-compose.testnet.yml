@@ -1,0 +1,191 @@
+# docker-compose.testnet.yml — Multi-node testnet cluster
+#
+# Starts 5 interconnected testnet nodes + monitoring (Prometheus + Grafana).
+# Each node uses its own data volume and P2P/RPC/metrics port range.
+#
+# Usage:
+#   docker compose -f docker-compose.testnet.yml up -d --build
+#   docker compose -f docker-compose.testnet.yml logs -f seed1
+#   docker compose -f docker-compose.testnet.yml down -v   # wipe data
+#
+# Port map:
+#   seed1   — P2P 18633, RPC 18332, HTTP 18080, WS 19090, Metrics 19091
+#   seed2   — P2P 18634, RPC 18333, HTTP 18081, WS 19092, Metrics 19093
+#   node1   — P2P 18635, RPC 18334, HTTP 18082, WS 19094, Metrics 19095
+#   node2   — P2P 18636, RPC 18335, HTTP 18083, WS 19096, Metrics 19097
+#   node3   — P2P 18637, RPC 18336, HTTP 18084, WS 19098, Metrics 19099
+#   Prometheus — 9092
+#   Grafana    — 3000
+
+x-node-common: &node-common
+  build:
+    context: .
+    dockerfile: Dockerfile.simple
+  restart: unless-stopped
+  environment: &node-env
+    RUST_LOG: info
+    KUBERCOIN_NETWORK: testnet
+    KUBERCOIN_API_AUTH_ENABLED: "false"
+    KUBERCOIN_ALLOW_INSECURE_NO_AUTH: "true"
+    KUBERCOIN_TEST_MODE: "1"
+    KUBERCOIN_RPC_ADDR: "0.0.0.0:8332"
+    KUBERCOIN_P2P_ADDR: "0.0.0.0:18633"
+  networks:
+    - testnet
+  healthcheck:
+    test: ["CMD-SHELL", "curl -sf http://localhost:8332/api/health || exit 1"]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+    start_period: 30s
+
+services:
+  # ── Seed nodes (always-on, well-known addresses) ──────────────────────
+  seed1:
+    <<: *node-common
+    container_name: kubercoin-seed1
+    hostname: seed1
+    ports:
+      - "18633:18633"
+      - "18332:8332"
+      - "18080:8080"
+      - "19090:9090"
+      - "19091:9091"
+    volumes:
+      - seed1-data:/data/kubercoin
+    environment:
+      <<: *node-env
+      KUBERCOIN_INITIAL_PEERS: "seed2:18633"
+
+  seed2:
+    <<: *node-common
+    container_name: kubercoin-seed2
+    hostname: seed2
+    ports:
+      - "18634:18633"
+      - "18333:8332"
+      - "18081:8080"
+      - "19092:9090"
+      - "19093:9091"
+    volumes:
+      - seed2-data:/data/kubercoin
+    environment:
+      <<: *node-env
+      KUBERCOIN_INITIAL_PEERS: "seed1:18633"
+
+  # ── Ordinary nodes (connect to seeds) ─────────────────────────────────
+  node1:
+    <<: *node-common
+    container_name: kubercoin-node1
+    hostname: node1
+    ports:
+      - "18635:18633"
+      - "18334:8332"
+      - "18082:8080"
+      - "19094:9090"
+      - "19095:9091"
+    volumes:
+      - node1-data:/data/kubercoin
+    environment:
+      <<: *node-env
+      KUBERCOIN_INITIAL_PEERS: "seed1:18633,seed2:18633"
+    depends_on:
+      seed1:
+        condition: service_healthy
+      seed2:
+        condition: service_healthy
+
+  node2:
+    <<: *node-common
+    container_name: kubercoin-node2
+    hostname: node2
+    ports:
+      - "18636:18633"
+      - "18335:8332"
+      - "18083:8080"
+      - "19096:9090"
+      - "19097:9091"
+    volumes:
+      - node2-data:/data/kubercoin
+    environment:
+      <<: *node-env
+      KUBERCOIN_INITIAL_PEERS: "seed1:18633,seed2:18633"
+    depends_on:
+      seed1:
+        condition: service_healthy
+      seed2:
+        condition: service_healthy
+
+  node3:
+    <<: *node-common
+    container_name: kubercoin-node3
+    hostname: node3
+    ports:
+      - "18637:18633"
+      - "18336:8332"
+      - "18084:8080"
+      - "19098:9090"
+      - "19099:9091"
+    volumes:
+      - node3-data:/data/kubercoin
+    environment:
+      <<: *node-env
+      KUBERCOIN_INITIAL_PEERS: "seed1:18633,seed2:18633"
+    depends_on:
+      seed1:
+        condition: service_healthy
+      seed2:
+        condition: service_healthy
+
+  # ── Monitoring ────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kubercoin-testnet-prometheus
+    restart: unless-stopped
+    ports:
+      - "9092:9090"
+    volumes:
+      - ./infra/monitoring/prometheus-testnet.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-testnet-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    networks:
+      - testnet
+    depends_on:
+      - seed1
+      - seed2
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kubercoin-testnet-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-testnet-data:/var/lib/grafana
+      - ./infra/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./infra/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - testnet
+    depends_on:
+      - prometheus
+
+volumes:
+  seed1-data:
+  seed2-data:
+  node1-data:
+  node2-data:
+  node3-data:
+  prometheus-testnet-data:
+  grafana-testnet-data:
+
+networks:
+  testnet:
+    driver: bridge

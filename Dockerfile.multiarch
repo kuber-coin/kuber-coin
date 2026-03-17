@@ -1,0 +1,98 @@
+# Multi-architecture Docker build
+# Supports: linux/amd64, linux/arm64
+FROM --platform=$BUILDPLATFORM rust:1.88.0-slim AS builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+WORKDIR /build
+
+# Install cross-compilation dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu \
+    libc6-dev-arm64-cross \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pin toolchain and set SOURCE_DATE_EPOCH for reproducible builds
+COPY rust-toolchain.toml ./
+ARG SOURCE_DATE_EPOCH
+ENV SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}
+
+# Copy workspace files
+COPY Cargo.toml Cargo.lock ./
+COPY crates ./crates
+
+# Configure Rust target based on platform
+RUN case "$TARGETPLATFORM" in \
+    "linux/amd64") echo "x86_64-unknown-linux-gnu" > /tmp/target ;; \
+    "linux/arm64") echo "aarch64-unknown-linux-gnu" > /tmp/target ;; \
+    *) echo "Unsupported platform: $TARGETPLATFORM" && exit 1 ;; \
+    esac
+
+# Install target
+RUN rustup target add $(cat /tmp/target)
+
+# Configure cross-compilation environment
+ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
+    CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc \
+    CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
+
+# Build release binary
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/build/target \
+    cargo build --release --target $(cat /tmp/target) --bin kubercoin && \
+    cp /build/target/$(cat /tmp/target)/release/kubercoin /kubercoin
+
+# Runtime stage
+FROM --platform=$TARGETPLATFORM debian:bookworm-slim
+
+ARG VERSION=dev
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL org.opencontainers.image.title="KuberCoin Node" \
+      org.opencontainers.image.description="KuberCoin blockchain node with multi-arch support" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.source="https://github.com/kubercoin/kubercoin" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.licenses="MIT"
+
+# Install runtime deps + create user + create data dir
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    libssl3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r kubercoin \
+    && useradd -r -g kubercoin kubercoin \
+    && mkdir -p /var/lib/kubercoin /etc/kubercoin \
+    && chown -R kubercoin:kubercoin /var/lib/kubercoin /etc/kubercoin
+
+# Copy binary from builder
+COPY --from=builder /kubercoin /usr/local/bin/kubercoin
+
+# Copy entrypoint script
+COPY infra/docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Switch to kubercoin user
+USER kubercoin
+
+# Expose ports
+EXPOSE 8080 8332 8633 9090 9091
+
+# Set working directory
+WORKDIR /var/lib/kubercoin
+
+# Health check — verify the REST API is responsive
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -sf http://127.0.0.1:8080/api/health || exit 1
+
+# Volume for persistent data
+VOLUME ["/var/lib/kubercoin"]
+
+# Entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["kubercoin"]

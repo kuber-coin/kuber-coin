@@ -1,0 +1,70 @@
+# Cargo deny configuration for KuberCoin
+# https://github.com/EmbarkStudios/cargo-deny
+
+[advisories]
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+version = 2
+ignore = [
+    "RUSTSEC-2025-0119",  # number_prefix - unmaintained, indirect via indicatif
+    "RUSTSEC-2025-0141",  # bincode - unmaintained, consensus-critical (39 call sites) — replacing requires hard fork
+    "RUSTSEC-2025-0057",  # fxhash - unmaintained, indirect via sled
+    "RUSTSEC-2024-0384",  # instant - unmaintained, indirect via sled
+]
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "0BSD",
+    "Zlib",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+    "MPL-2.0",
+    "CC0-1.0",
+    "OpenSSL",
+    "CDLA-Permissive-2.0",  # webpki-roots - Mozilla CA certificate bundle
+]
+confidence-threshold = 0.8
+
+[[licenses.clarify]]
+name = "ring"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [
+    { path = "LICENSE", hash = 0xbd0eed23 }
+]
+
+[licenses.private]
+ignore = false
+registries = []
+
+[bans]
+multiple-versions = "warn"
+wildcards = "allow"
+highlight = "all"
+workspace-default-features = "allow"
+external-default-features = "allow"
+
+deny = [
+    # Prefer rustls over openssl for better portability
+    # Allow openssl when pulled transitively by reqwest/native-tls on platforms that need it
+    { name = "openssl", wrappers = ["native-tls"] },
+    { name = "openssl-sys", wrappers = ["openssl", "native-tls"] },
+]
+
+skip = []
+skip-tree = []
+
+[sources]
+unknown-registry = "warn"
+unknown-git = "warn"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
+
+[sources.allow-org]
+github = []
+gitlab = []
+bitbucket = []

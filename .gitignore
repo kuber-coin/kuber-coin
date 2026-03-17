@@ -1,0 +1,93 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+
+# IDE
+.vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local env files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.testnet
+
+# Node.js
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Test artifacts
+test-results/
+playwright-report/
+playwright-report-live/
+coverage/
+*.lcov
+*.profraw
+*.profdata
+
+# Wallet files (contain private keys!)
+wallet_*.json
+wallet?.json
+*_wallet.json
+!wallet_*.json.example
+*.wallet
+
+# Chain data
+/data/
+/chaindata/
+*.db
+*.sst
+*.log
+mempool.bin
+peers.json
+
+# Launch artifacts (generated during genesis ceremony)
+genesis_record.json
+launch_*.log
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+apps/native/mining-ui/windows-winui3/bin/
+apps/native/mining-ui/windows-winui3/obj/
+tools/test-console/bin/
+tools/test-console/obj/
+
+# Archives
+*.tar.gz
+*.tgz
+*.zip
+
+# Temporary files
+tmp_*
+*.tmp
+IMPLEMENTATION_COMPLETE.md
+
+# Diagnostic/debug output
+*_output.txt
+*_out.txt
+check*.txt
+clippy*.txt
+release_*.txt
+test_*.txt
+pw_*.txt
+error.txt
+deny_output.txt

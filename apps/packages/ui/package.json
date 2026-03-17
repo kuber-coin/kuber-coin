@@ -1,0 +1,38 @@
+{
+  "name": "@kubercoin/ui",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "styles"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles": "./styles/index.css",
+    "./styles/editorial": "./styles/editorial.css",
+    "./styles/premium": "./styles/premium.css",
+    "./styles/globals": "./styles/globals.css"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

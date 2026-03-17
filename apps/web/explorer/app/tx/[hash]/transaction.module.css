@@ -1,0 +1,310 @@
+.container {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.txHash {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hashLabel {
+  font-size: 14px;
+  color: var(--kc-muted);
+  font-weight: 600;
+}
+
+.hash {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-text-bright);
+  word-break: break-all;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  color: var(--kc-text-bright);
+}
+
+.infoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.label {
+  font-size: 14px;
+  color: var(--kc-muted);
+  font-weight: 600;
+}
+
+.value {
+  font-size: 15px;
+  color: var(--kc-text-bright);
+  font-weight: 600;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.valueWithCopy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 60%;
+}
+
+.statusInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.confirmations {
+  font-size: 13px;
+  color: var(--kc-muted);
+}
+
+.relative {
+  font-size: 13px;
+  color: var(--kc-muted);
+  font-weight: 400;
+}
+
+.feeUsd {
+  font-size: 13px;
+  color: var(--kc-muted);
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.link {
+  color: var(--kc-accent-blue);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.confirmationProgress {
+  margin-top: 16px;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--kc-text-bright);
+}
+
+.milestones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.milestones span {
+  font-size: 12px;
+  color: var(--kc-muted);
+  transition: all 0.3s ease;
+}
+
+.milestones span.reached {
+  color: var(--kc-success);
+  font-weight: 700;
+}
+
+.flowDiagram {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.flowSection {
+  flex: 1;
+}
+
+.flowHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.flowIcon {
+  font-size: 24px;
+}
+
+.flowHeader h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--kc-text-bright);
+  flex: 1;
+}
+
+.flowList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flowItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.flowAddress {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--kc-text-bright);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.flowAmount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--kc-accent-blue);
+  white-space: nowrap;
+}
+
+.flowArrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 32px;
+  color: var(--kc-accent-blue);
+  flex-shrink: 0;
+}
+
+.feeLabel {
+  font-size: 12px;
+  color: var(--kc-muted);
+  white-space: nowrap;
+}
+
+.address {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-text-bright);
+}
+
+.amount {
+  font-weight: 700;
+  color: var(--kc-accent-blue);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+@media (max-width: 1024px) {
+  .flowDiagram {
+    flex-direction: column;
+  }
+
+  .flowArrow {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .txHash {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .infoItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .value {
+    align-items: flex-start;
+  }
+
+  .valueWithCopy {
+    max-width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

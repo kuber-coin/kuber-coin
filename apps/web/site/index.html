@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kuber — Peer-to-Peer Digital Currency</title>
+    <meta
+      name="description"
+      content="Kuber is a decentralized cryptocurrency with 21M fixed supply, SHA-256d Proof-of-Work, and a complete open-source stack."
+    />
+    <style>
+      :root {
+        --primary: #6c5ce7;
+        --primary-dk: #5a4bd1;
+        --primary-lt: #a29bfe;
+        --bg: #ffffff;
+        --bg2: #f7f8fc;
+        --bg3: #eef0f8;
+        --text: #1a1a2e;
+        --muted: #64687d;
+        --border: #e0e2f0;
+        --good: #00b894;
+        --card-bg: #ffffff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Helvetica,
+          Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+      }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      /* ── Header ── */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0.9rem 2rem;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.03em;
+      }
+      .logo-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-lt));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .logo-icon svg {
+        width: 18px;
+        height: 18px;
+        color: #fff;
+      }
+      .logo span {
+        color: var(--primary);
+      }
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+      }
+      nav ul a {
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 500;
+        padding: 0.45rem 0.85rem;
+        border-radius: 8px;
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      nav ul a:hover {
+        color: var(--text);
+        background: var(--bg3);
+        text-decoration: none;
+      }
+      .nav-cta {
+        display: inline-block;
+        padding: 0.55rem 1.2rem;
+        background: var(--primary);
+        color: #fff !important;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: background 0.15s !important;
+      }
+      .nav-cta:hover {
+        background: var(--primary-dk) !important;
+        text-decoration: none;
+      }
+
+      /* ── Hero ── */
+      .hero-wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 5rem 2rem 4rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+      .eyebrow {
+        display: inline-block;
+        padding: 0.25rem 0.85rem;
+        background: rgba(108, 92, 231, 0.1);
+        color: var(--primary);
+        border-radius: 100px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 1.2rem;
+      }
+      .hero-left h1 {
+        font-size: 3.4rem;
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+        margin-bottom: 1.25rem;
+        color: var(--text);
+      }
+      .hero-left h1 span {
+        color: var(--primary);
+      }
+      .hero-left p {
+        font-size: 1.1rem;
+        color: var(--muted);
+        max-width: 480px;
+        margin-bottom: 2.2rem;
+      }
+      .btn-row {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.8rem 1.8rem;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(108, 92, 231, 0.35);
+      }
+      .btn-primary:hover {
+        background: var(--primary-dk);
+        text-decoration: none;
+        transform: translateY(-1px);
+      }
+      .btn-outline {
+        border: 1.5px solid var(--border);
+        color: var(--text);
+      }
+      .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      /* Illustration */
+      .hero-art {
+        position: relative;
+        height: 360px;
+        border-radius: 24px;
+        background: linear-gradient(
+          145deg,
+          #f4f0ff 0%,
+          #e8f4fd 60%,
+          #f0fff8 100%
+        );
+        overflow: hidden;
+      }
+      .art-orb {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(108, 92, 231, 0.25),
+          rgba(162, 155, 254, 0.15)
+        );
+        animation: float 6s ease-in-out infinite;
+      }
+      .art-card {
+        position: absolute;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(108, 92, 231, 0.14);
+        box-shadow: 0 8px 32px rgba(108, 92, 231, 0.12);
+        padding: 1rem 1.25rem;
+        font-size: 0.8rem;
+        color: var(--text);
+      }
+      .art-card .card-label {
+        color: var(--muted);
+        font-size: 0.72rem;
+        margin-bottom: 0.25rem;
+      }
+      .art-card .card-value {
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--text);
+      }
+      .art-card .card-up {
+        color: var(--good);
+        font-size: 0.75rem;
+        margin-top: 0.2rem;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* ── Action Cards (ethereum.org-style) ── */
+      .action-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem 5rem;
+      }
+      .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem;
+      }
+      .action-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.75rem;
+        transition:
+          box-shadow 0.2s,
+          transform 0.2s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .action-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(108, 92, 231, 0.13);
+        text-decoration: none;
+      }
+      .action-card .card-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+      }
+      .icon-wallet {
+        background: rgba(108, 92, 231, 0.1);
+      }
+      .icon-get {
+        background: rgba(0, 184, 148, 0.1);
+      }
+      .icon-explore {
+        background: rgba(9, 132, 227, 0.1);
+      }
+      .icon-build {
+        background: rgba(253, 121, 168, 0.1);
+      }
+      .action-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .action-card p {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ── Stats bar ── */
+      .stats-bar {
+        background: var(--bg2);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 2.5rem 2rem;
+      }
+      .stats-inner {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1.5rem;
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .stat .num {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: -0.03em;
+      }
+      .stat .label {
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin-top: 0.2rem;
+      }
+
+      /* ── Features ── */
+      .features {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 5rem 2rem;
+      }
+      .section-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.6rem;
+        color: var(--text);
+      }
+      .section-sub {
+        text-align: center;
+        color: var(--muted);
+        max-width: 580px;
+        margin: 0 auto 3rem;
+        font-size: 1rem;
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      .feature {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 2rem;
+        transition: box-shadow 0.2s;
+      }
+      .feature:hover {
+        box-shadow: 0 8px 32px rgba(108, 92, 231, 0.1);
+      }
+      .feature-icon {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+      }
+      .feature h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+      .feature p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      /* ── Tokenomics ── */
+      .tokenomics {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 2rem 5rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--bg2);
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      th,
+      td {
+        padding: 0.95rem 1.5rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        background: var(--bg3);
+      }
+      td {
+        color: var(--text);
+        font-size: 0.92rem;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* ── Quickstart ── */
+      .quickstart {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 2rem 5rem;
+      }
+      pre {
+        background: #1a1a2e;
+        color: #e0e6ff;
+        border-radius: 18px;
+        padding: 1.75rem 2rem;
+        overflow-x: auto;
+        font-size: 0.88rem;
+        line-height: 2;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      pre .comment {
+        color: #6c7a99;
+      }
+      pre .cmd {
+        color: #a29bfe;
+      }
+
+      /* ── Footer ── */
+      footer {
+        background: var(--bg2);
+        border-top: 1px solid var(--border);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.03em;
+      }
+      .footer-links {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      }
+      .footer-links a {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+      .footer-links a:hover {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      @media (max-width: 900px) {
+        .hero-wrap {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+        }
+        .hero-art {
+          height: 260px;
+        }
+        .hero-left h1 {
+          font-size: 2.4rem;
+        }
+      }
+      @media (max-width: 640px) {
+        .hero-left h1 {
+          font-size: 2rem;
+        }
+        .header-inner {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        nav ul {
+          gap: 0;
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── Header ── -->
+    <header>
+      <div class="header-inner">
+        <a class="logo" href="https://kuber-coin.com">
+          <div class="logo-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <span>Kuber</span>
+        </a>
+        <nav>
+          <ul>
+            <li><a href="#features">Learn</a></li>
+            <li><a href="#action-cards">Use</a></li>
+            <li><a href="#quickstart">Build</a></li>
+            <li><a href="https://explorer.kuber-coin.com">Explore</a></li>
+            <li><a href="https://docs.kuber-coin.com">Docs</a></li>
+            <li>
+              <a href="https://github.com/kubercoin/kubercoin" target="_blank"
+                >GitHub</a
+              >
+            </li>
+            <li>
+              <a href="https://wallet.kuber-coin.com" class="nav-cta"
+                >Open Wallet</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ── Hero ── -->
+    <section>
+      <div class="hero-wrap">
+        <div class="hero-left">
+          <div class="eyebrow">ⓚ Kuber</div>
+          <h1>Welcome to <span>Kuber</span></h1>
+          <p>
+            The peer-to-peer digital currency with a fixed 21&nbsp;million
+            supply, SHA-256d Proof-of-Work, and a complete open-source stack —
+            from consensus engine to web wallet.
+          </p>
+          <div class="btn-row">
+            <a href="https://wallet.kuber-coin.com" class="btn btn-primary"
+              >Open Wallet</a
+            >
+            <a href="https://explorer.kuber-coin.com" class="btn btn-outline"
+              >Block Explorer</a
+            >
+          </div>
+        </div>
+        <!-- Inline illustration — no external images required -->
+        <div class="hero-art" aria-hidden="true">
+          <div
+            class="art-orb"
+            style="
+              width: 220px;
+              height: 220px;
+              top: -60px;
+              right: -60px;
+              animation-delay: 0s;
+            "
+          ></div>
+          <div
+            class="art-orb"
+            style="
+              width: 140px;
+              height: 140px;
+              bottom: -30px;
+              left: -30px;
+              animation-delay: 2s;
+              background: linear-gradient(
+                135deg,
+                rgba(0, 184, 148, 0.18),
+                rgba(162, 155, 254, 0.1)
+              );
+            "
+          ></div>
+          <!-- Wallet mock card -->
+          <div class="art-card" style="top: 32px; left: 32px; min-width: 170px">
+            <div class="card-label">Balance</div>
+            <div class="card-value">1,250.00 KUBER</div>
+            <div class="card-up">▲ +2.4% today</div>
+          </div>
+          <!-- Block card -->
+          <div
+            class="art-card"
+            style="bottom: 40px; right: 28px; min-width: 160px"
+          >
+            <div class="card-label">Latest Block</div>
+            <div class="card-value">#842,100</div>
+            <div class="card-up" style="color: #0984e3">⬛ 10 s ago</div>
+          </div>
+          <!-- Mini stat chips -->
+          <div
+            class="art-card"
+            style="bottom: 40px; left: 32px; padding: 0.6rem 1rem"
+          >
+            <div class="card-label">Mempool</div>
+            <div class="card-value" style="font-size: 0.88rem">12 txs</div>
+          </div>
+          <div
+            class="art-card"
+            style="top: 32px; right: 28px; padding: 0.6rem 1rem"
+          >
+            <div class="card-label">Peers</div>
+            <div class="card-value" style="font-size: 0.88rem">7 online</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4 Action Cards (eth.org style) ── -->
+    <section class="action-section" id="action-cards">
+      <div class="action-grid">
+        <a class="action-card" href="https://wallet.kuber-coin.com">
+          <div class="card-icon icon-wallet">💳</div>
+          <h3>Open a Wallet</h3>
+          <p>Send, receive, and store KUBER securely from any browser.</p>
+        </a>
+        <a class="action-card" href="https://docs.kuber-coin.com">
+          <div class="card-icon icon-get">💰</div>
+          <h3>Get KUBER</h3>
+          <p>
+            Mine blocks, claim from the faucet, or receive from the network.
+          </p>
+        </a>
+        <a class="action-card" href="https://explorer.kuber-coin.com">
+          <div class="card-icon icon-explore">🔍</div>
+          <h3>Explore the Chain</h3>
+          <p>
+            Browse blocks, transactions, and addresses on the live explorer.
+          </p>
+        </a>
+        <a class="action-card" href="https://dapp.kuber-coin.com">
+          <div class="card-icon icon-build">🛠️</div>
+          <h3>Start Building</h3>
+          <p>
+            Deploy decentralized apps on the KuberCoin network with our SDK and
+            RPC.
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Stats bar ── -->
+    <div class="stats-bar">
+      <div class="stats-inner">
+        <div class="stat">
+          <div class="num">21M</div>
+          <div class="label">Max Supply</div>
+        </div>
+        <div class="stat">
+          <div class="num">50</div>
+          <div class="label">KUBER / Block</div>
+        </div>
+        <div class="stat">
+          <div class="num">210K</div>
+          <div class="label">Halving Interval</div>
+        </div>
+        <div class="stat">
+          <div class="num">10 min</div>
+          <div class="label">Block Time</div>
+        </div>
+        <div class="stat">
+          <div class="num">100%</div>
+          <div class="label">Open Source</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Features ── -->
+    <section id="features" class="features">
+      <h2 class="section-title">Built for Production</h2>
+      <p class="section-sub">
+        A complete peer-to-peer currency stack — every layer open-sourced.
+      </p>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="feature-icon">⛏️</div>
+          <h3>SHA-256d Proof-of-Work</h3>
+          <p>
+            Double-SHA256 mining with automatic difficulty
+            adjustment every 2,016 blocks.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔗</div>
+          <h3>UTXO Transaction Model</h3>
+          <p>
+            Clean unspent-output model with P2WPKH addresses, Schnorr
+            signatures, and BIP-44 HD wallets.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🪙</div>
+          <h3>Sound Money</h3>
+          <p>
+            Hard-capped at 21 million KUBER with a predictable halving schedule
+            — no inflation surprises.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <h3>Full Node in 6 MB</h3>
+          <p>
+            Entire node compiled to a single optimized Rust binary. Run on any
+            machine — no runtime dependencies.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📡</div>
+          <h3>Bitcoin-Compatible RPC</h3>
+          <p>
+            Standard JSON-RPC 2.0 interface: getblock, sendrawtransaction,
+            getblockchaininfo, and more.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📦</div>
+          <h3>Complete Stack</h3>
+          <p>
+            Node, web wallet, block explorer, monitoring (Prometheus + Grafana),
+            Docker, Kubernetes — all included.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Tokenomics ── -->
+    <section class="tokenomics">
+      <h2 class="section-title" style="margin-bottom: 0.6rem">Tokenomics</h2>
+      <p class="section-sub">
+        Fixed parameters, encoded at genesis, immutable by design.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Maximum Supply</td>
+            <td>21,000,000 KUBER</td>
+          </tr>
+          <tr>
+            <td>Initial Block Reward</td>
+            <td>50 KUBER</td>
+          </tr>
+          <tr>
+            <td>Halving Interval</td>
+            <td>Every 210,000 blocks (~4 years)</td>
+          </tr>
+          <tr>
+            <td>Block Target Time</td>
+            <td>10 minutes</td>
+          </tr>
+          <tr>
+            <td>Consensus Algorithm</td>
+            <td>SHA-256d Proof-of-Work</td>
+          </tr>
+          <tr>
+            <td>Difficulty Adjustment</td>
+            <td>Every 2,016 blocks (~2 weeks)</td>
+          </tr>
+          <tr>
+            <td>Denomination</td>
+            <td>1 KUBER = 100,000,000 satoshis</td>
+          </tr>
+          <tr>
+            <td>Coinbase Maturity</td>
+            <td>100 confirmations</td>
+          </tr>
+          <tr>
+            <td>Max Block Weight</td>
+            <td>4 MB (SegWit-compatible)</td>
+          </tr>
+          <tr>
+            <td>Address Format</td>
+            <td>Bech32 (mainnet) / Bech32 testnet</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── Quick Start ── -->
+    <section id="quickstart" class="quickstart">
+      <h2 class="section-title" style="margin-bottom: 0.6rem">Quick Start</h2>
+      <p class="section-sub">
+        Run a node, create a wallet, and send your first transaction in minutes.
+      </p>
+      <pre>
+<span class="comment"># Download and run a full node</span>
+<span class="cmd">$ kubercoin node</span>
+
+<span class="comment"># Create a wallet</span>
+<span class="cmd">$ kubercoin new-wallet my_wallet.json</span>
+Address: kuber1qw508d6qejxtdg4y5r3zarvary0c5xw7k
+
+<span class="comment"># Start mining</span>
+<span class="cmd">$ kubercoin mine-to kuber1qw508d6qejxtdg4y5r3zarvary0c5xw7k 10</span>
+
+<span class="comment"># Check balance</span>
+<span class="cmd">$ kubercoin get-balance my_wallet.json</span>
+Total: 500.00000000 KUBER (50 per block × 10 blocks)
+
+<span class="comment"># Send a payment</span>
+<span class="cmd">$ kubercoin send my_wallet.json kuber1recipient... 25.0</span>
+
+<span class="comment"># Or run the full stack with Docker</span>
+<span class="cmd">$ docker compose up -d</span>
+  </pre>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer>
+      <div class="footer-logo">
+        <div
+          class="logo-icon"
+          style="width: 28px; height: 28px; border-radius: 8px"
+        >
+          <svg
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            style="width: 15px; height: 15px; color: #fff"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        Kuber
+      </div>
+      <div class="footer-links">
+        <a href="https://wallet.kuber-coin.com">Wallet</a>
+        <a href="https://explorer.kuber-coin.com">Explorer</a>
+        <a href="https://docs.kuber-coin.com">Docs</a>
+        <a href="https://dapp.kuber-coin.com">DApps</a>
+        <a href="https://node.kuber-coin.com/api/health">Node API</a>
+        <a href="https://github.com/kubercoin/kubercoin" target="_blank"
+          >GitHub</a
+        >
+        <a href="WHITEPAPER.md">Whitepaper</a>
+      </div>
+      <p>
+        Kuber v1.0.0 &middot; MIT License &middot; &copy; 2026 Kuber
+        Contributors
+      </p>
+    </footer>
+  </body>
+</html>

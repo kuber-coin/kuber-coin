@@ -1,0 +1,189 @@
+.container {
+  padding: 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--kc-muted);
+  margin: 8px 0 0 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cardHeader h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--kc-text-bright);
+}
+
+.legend {
+  display: flex;
+  gap: 8px;
+}
+
+.tableContainer {
+  margin-top: 24px;
+  overflow-x: auto;
+}
+
+.heightLink {
+  text-decoration: none;
+}
+
+.hashCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hashLink {
+  color: var(--kc-accent-blue);
+  text-decoration: none;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.hashLink:hover {
+  color: var(--kc-accent-purple);
+  text-decoration: underline;
+}
+
+.time {
+  font-size: 13px;
+  color: var(--kc-muted);
+}
+
+.size {
+  font-size: 13px;
+  color: var(--kc-text-bright);
+}
+
+.miner {
+  font-size: 13px;
+  color: var(--kc-muted);
+}
+
+.reward {
+  font-weight: 600;
+  color: var(--kc-accent-green);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.infoTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--kc-text-bright);
+}
+
+.statsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--kc-panel-solid);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--kc-muted);
+}
+
+.statRow strong {
+  color: var(--kc-text-bright);
+}
+
+.validationList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.validationItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--kc-panel-solid);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--kc-muted);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}

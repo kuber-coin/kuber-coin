@@ -1,0 +1,42 @@
+<Application
+    x:Class="KuberCoinMiner.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <SolidColorBrush x:Key="BrandOrange" Color="#627EEA"/>
+            <SolidColorBrush x:Key="BrandCyan" Color="#59D3FF"/>
+            <SolidColorBrush x:Key="AppForeground" Color="#E7ECFF"/>
+            <SolidColorBrush x:Key="AppMutedForeground" Color="#9AA9D6"/>
+            <SolidColorBrush x:Key="CardBackground" Color="#141E39"/>
+            <SolidColorBrush x:Key="CardBackgroundStrong" Color="#0F162B"/>
+            <SolidColorBrush x:Key="AppBackground" Color="#060816"/>
+            <SolidColorBrush x:Key="AppChromeBackground" Color="#0B1020"/>
+            <SolidColorBrush x:Key="AppBorderBrush" Color="#2B3A69"/>
+            
+            <Style x:Key="CardStyle" TargetType="Border">
+                <Setter Property="Background" Value="{ThemeResource CardBackground}"/>
+                <Setter Property="CornerRadius" Value="14"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="BorderBrush" Value="{ThemeResource AppBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+            
+            <Style x:Key="MetricNumberStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="48"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style x:Key="MetricLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{ThemeResource AppMutedForeground}"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

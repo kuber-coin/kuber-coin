@@ -1,0 +1,117 @@
+{
+  # Global options
+  email {$KUBERCOIN_ACME_EMAIL}
+  servers {
+    protocols h1 h2
+  }
+}
+
+(security_headers) {
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options "SAMEORIGIN"
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  }
+}
+
+# Main Landing (example.com)
+{$MAIN_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy web-unified:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Explorer UI
+{$EXPLORER_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy explorer-web:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Wallet UI
+{$WALLET_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy wallet-web:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Ops UI (protected)
+{$OPS_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  basicauth {
+    {$OPS_AUTH_USER} {$OPS_AUTH_HASH}
+  }
+  reverse_proxy ops-web:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Documentation (docs.example.com)
+{$DOCS_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy docs-web:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# DApp Portal (dapp.example.com)
+{$DAPP_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy dapp-web:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Node Dashboard (node.example.com)
+{$NODE_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy monitoring-web:3000
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Public REST API
+{$API_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  reverse_proxy node:8634
+  respond /health "ok" 200
+  log { output stdout; format console }
+}
+
+# Public WebSocket endpoint
+{$WS_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+  respond /health "ok" 200
+  respond "websocket endpoint unavailable" 404
+  log { output stdout; format console }
+}
+
+# Optional RPC endpoint (disabled unless credentials provided)
+{$RPC_DOMAIN} {
+  encode zstd gzip
+  import security_headers
+
+  @rpcAuthEnabled expression `{env.RPC_AUTH_USER} != "" && {env.RPC_AUTH_HASH} != ""`
+  handle @rpcAuthEnabled {
+    basicauth {
+      {$RPC_AUTH_USER} {$RPC_AUTH_HASH}
+    }
+    reverse_proxy node:8634
+  }
+  respond "not found" 404
+  log { output stdout; format console }
+}

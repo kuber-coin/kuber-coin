@@ -1,0 +1,32 @@
+[package]
+name = "chain"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "KuberCoin block structure, Merkle trees, and chain primitives"
+
+[dependencies]
+sha2.workspace = true
+serde.workspace = true
+bincode.workspace = true
+hex.workspace = true
+parking_lot.workspace = true
+thiserror.workspace = true
+tx = { path = "../tx" }
+sled = "0.34"
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+criterion = "0.5"
+
+[[bench]]
+name = "chain_bench"
+harness = false
+
+[lints]
+workspace = true

@@ -1,0 +1,242 @@
+.container {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: float 8s ease-in-out infinite;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  animation: fadeIn 1s ease;
+}
+
+.heroTitle {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 24px 0;
+  letter-spacing: -0.03em;
+  color: var(--kc-text-bright);
+}
+
+.gradient {
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s ease-in-out infinite;
+  background-size: 200% auto;
+}
+
+.heroDescription {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--kc-muted);
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Section Title */
+.sectionTitle {
+  font-size: 48px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 48px;
+  letter-spacing: -0.02em;
+  color: var(--kc-text-bright);
+  animation: slideInUp 0.6s ease;
+}
+
+/* Stats Section */
+.stats {
+  padding: 80px 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Features Section */
+.features {
+  padding: 80px 0;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.featureIcon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+
+.featureTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--kc-text-bright);
+}
+
+.featureDescription {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--kc-muted);
+  margin-bottom: 20px;
+}
+
+.featureBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Testimonials */
+.testimonials {
+  padding: 80px 0;
+}
+
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.testimonialStars {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.testimonialText {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--kc-text);
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.testimonialAuthor {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.testimonialAuthor strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--kc-text-bright);
+}
+
+.testimonialAuthor span {
+  font-size: 14px;
+  color: var(--kc-muted);
+}
+
+/* CTA Section */
+.cta {
+  padding: 80px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.ctaTitle {
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--kc-text-bright);
+  letter-spacing: -0.02em;
+}
+
+.ctaDescription {
+  font-size: 18px;
+  color: var(--kc-muted);
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.ctaActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 48px;
+  }
+
+  .heroDescription {
+    font-size: 18px;
+  }
+
+  .sectionTitle {
+    font-size: 36px;
+  }
+
+  .statsGrid,
+  .featuresGrid,
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaTitle {
+    font-size: 32px;
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}

@@ -1,0 +1,227 @@
+.container {
+  padding: 32px;
+  max-width: 1600px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  background: var(--kc-gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--kc-muted);
+  margin: 8px 0 0 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.controls {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.peerCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.address {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: var(--kc-text-bright);
+}
+
+.version {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--kc-muted);
+}
+
+.charts {
+  padding: 20px 0;
+}
+
+.chartSection {
+  margin-bottom: 40px;
+}
+
+.chartTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  color: var(--kc-text-bright);
+}
+
+.bandwidthStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 24px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.bandwidthItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bandwidthLabel {
+  font-size: 14px;
+  color: var(--kc-muted);
+}
+
+.bandwidthValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--kc-text-bright);
+}
+
+.topology {
+  padding: 40px 0;
+}
+
+.topologyMap {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  margin-bottom: 24px;
+}
+
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: float 3s ease-in-out infinite;
+}
+
+.node:nth-child(odd) {
+  animation-delay: 0.5s;
+}
+
+.nodeCore {
+  width: 80px;
+  height: 80px;
+  background: var(--kc-gradient-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+  box-shadow: 0 0 40px rgba(96, 165, 250, 0.5);
+  border: 3px solid rgba(96, 165, 250, 0.3);
+}
+
+.nodePeer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--kc-panel-solid);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nodeLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--kc-text-bright);
+}
+
+.topologyLegend {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px;
+  background: var(--kc-panel-hover);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--kc-text);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .bandwidthStats {
+    grid-template-columns: 1fr;
+  }
+
+  .topologyMap {
+    height: 400px;
+  }
+
+  .topologyLegend {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

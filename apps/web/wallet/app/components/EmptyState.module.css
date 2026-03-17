@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.iconWrapper {
+  margin-bottom: 24px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.illustration {
+  font-size: 80px;
+  display: block;
+  filter: grayscale(0.3) opacity(0.8);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--kc-text-bright, #ffffff);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.description {
+  font-size: 16px;
+  color: var(--kc-muted, rgba(148, 163, 184, 0.7));
+  max-width: 400px;
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+}
+
+.action {
+  animation: fadeIn 0.4s ease 0.2s both;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

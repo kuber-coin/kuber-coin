@@ -1,0 +1,121 @@
+<Page
+    x:Class="KuberCoinMiner.Views.DevicesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Spacing="24">
+            
+            <TextBlock Text="Mining Devices" 
+                      FontSize="24" 
+                      FontWeight="SemiBold"/>
+
+            <!-- Device Cards -->
+            <ItemsControl ItemsSource="{x:Bind ViewModel.Devices, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Device Header -->
+                                <Grid Grid.Row="0" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" 
+                                                  FontSize="20" 
+                                                  FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Model}" 
+                                                  FontSize="14" 
+                                                  Foreground="#6B7280"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+
+                                    <ToggleSwitch Grid.Column="1"
+                                                 IsOn="{Binding IsActive, Mode=TwoWay}"
+                                                 HorizontalAlignment="Right"
+                                                 OnContent="Active"
+                                                 OffContent="Disabled"/>
+                                </Grid>
+
+                                <!-- Device Metrics -->
+                                <Grid Grid.Row="1" Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Hashrate" FontSize="12" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding Hashrate}" 
+                                                  FontSize="24" 
+                                                  FontWeight="Bold"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Temperature" FontSize="12" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding Temperature}" 
+                                                  FontSize="24" 
+                                                  FontWeight="Bold"
+                                                  Foreground="{Binding TempColor}"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Power" FontSize="12" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding Power}" 
+                                                  FontSize="24" 
+                                                  FontWeight="Bold"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="3">
+                                        <TextBlock Text="Fan Speed" FontSize="12" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding FanSpeed}" 
+                                                  FontSize="24" 
+                                                  FontWeight="Bold"
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Progress Bars -->
+                                <StackPanel Grid.Row="2" Spacing="12">
+                                    <Grid>
+                                        <TextBlock Text="GPU Utilization" FontSize="12" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding GpuUtilization}" 
+                                                  FontSize="12"
+                                                  HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding GpuUtilizationValue}" 
+                                               Maximum="100"
+                                               Foreground="{StaticResource BrandOrange}"/>
+
+                                    <Grid>
+                                        <TextBlock Text="Memory Utilization" FontSize="12" Foreground="#6B7280"/>
+                                        <TextBlock Text="{Binding MemoryUtilization}" 
+                                                  FontSize="12"
+                                                  HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding MemoryUtilizationValue}" 
+                                               Maximum="100"
+                                               Foreground="{StaticResource BrandOrange}"/>
+                                </StackPanel>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

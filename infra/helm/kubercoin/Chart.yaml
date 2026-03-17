@@ -1,0 +1,17 @@
+apiVersion: v2
+name: kubercoin
+description: A Helm chart for KuberCoin blockchain node
+type: application
+version: 1.0.0
+appVersion: "0.1.0"
+keywords:
+  - blockchain
+  - cryptocurrency
+  - kubercoin
+home: https://kuber-coin.com
+sources:
+  - https://github.com/kubercoin/kubercoin
+maintainers:
+  - name: KuberCoin Team
+    email: connect@kuber-coin.com
+icon: https://kuber-coin.com/logo.png

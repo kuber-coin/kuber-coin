@@ -1,0 +1,59 @@
+[package]
+name = "kubercoin-faucet"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "KuberCoin testnet faucet for distributing free coins"
+
+[dependencies]
+# Core crates
+tx = { path = "../../core/tx" }
+testnet = { path = "../../core/testnet" }
+
+# Async runtime
+tokio = { version = "1.49", features = ["rt-multi-thread", "macros", "net", "io-util", "fs", "sync", "time"] }
+
+# Web framework
+axum = { version = "0.8", features = ["json"] }
+tower-http = { version = "0.6", features = ["cors"] }
+
+# Serialization
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+bincode.workspace = true
+
+# HTTP client
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+
+# Cryptography
+hex.workspace = true
+bs58.workspace = true
+sha2.workspace = true
+rand.workspace = true
+
+# Error handling
+thiserror.workspace = true
+anyhow.workspace = true
+
+# Logging
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Rate limiting
+governor = "0.10"
+
+# CLI and config
+clap = { version = "4.5", features = ["derive"] }
+toml = "0.8"
+
+[dev-dependencies]
+tempfile.workspace = true
+tokio-test.workspace = true
+tower = { version = "0.5", features = ["util"] }
+
+[lints]
+workspace = true

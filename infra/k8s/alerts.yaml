@@ -1,0 +1,312 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alerts
+  namespace: kubercoin
+data:
+  alert-rules.yaml: |
+    apiVersion: 1
+    groups:
+      - name: kubercoin_alerts
+        interval: 30s
+        rules:
+          # High memory usage alert
+          - uid: memory_high
+            title: High Memory Usage
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: (kubercoin_memory_usage / kubercoin_memory_limit) * 100 > 80
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 5m
+            annotations:
+              description: 'Memory usage is above 80% (current: {{ $value }}%)'
+              summary: High memory usage detected
+            labels:
+              severity: warning
+              
+          # High CPU usage alert
+          - uid: cpu_high
+            title: High CPU Usage
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: rate(kubercoin_cpu_usage[5m]) > 0.8
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 5m
+            annotations:
+              description: 'CPU usage is above 80% (current: {{ $value }}%)'
+              summary: High CPU usage detected
+            labels:
+              severity: warning
+              
+          # Peer count too low
+          - uid: peers_low
+            title: Low Peer Count
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: kubercoin_peer_count < 3
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 10m
+            annotations:
+              description: 'Peer count is below 3 (current: {{ $value }})'
+              summary: Node is poorly connected to network
+            labels:
+              severity: critical
+              
+          # Blockchain sync stalled
+          - uid: sync_stalled
+            title: Blockchain Sync Stalled
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 1800
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: rate(kubercoin_block_height[30m]) == 0
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 30m
+            annotations:
+              description: 'Block height has not increased in 30 minutes'
+              summary: Blockchain synchronization appears to be stalled
+            labels:
+              severity: critical
+              
+          # Mempool size too large
+          - uid: mempool_large
+            title: Large Mempool
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: kubercoin_mempool_size > 10000
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 10m
+            annotations:
+              description: 'Mempool has {{ $value }} transactions pending'
+              summary: Mempool is growing large, possible network congestion
+            labels:
+              severity: warning
+              
+          # Disk space low
+          - uid: disk_low
+            title: Low Disk Space
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: (kubercoin_disk_usage / kubercoin_disk_total) * 100 > 85
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 5m
+            annotations:
+              description: 'Disk usage is above 85% (current: {{ $value }}%)'
+              summary: Running low on disk space
+            labels:
+              severity: critical
+              
+          # HTTP error rate high
+          - uid: http_errors_high
+            title: High HTTP Error Rate
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: (rate(kubercoin_http_requests{status=~"5.."}[5m]) / rate(kubercoin_http_requests[5m])) * 100 > 5
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 5m
+            annotations:
+              description: 'HTTP 5xx error rate is {{ $value }}%'
+              summary: High rate of HTTP errors detected
+            labels:
+              severity: warning
+              
+          # WebSocket connections low
+          - uid: websocket_low
+            title: Low WebSocket Connections
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: kubercoin_ws_connections < 1
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 15m
+            annotations:
+              description: 'No WebSocket connections active'
+              summary: No clients connected via WebSocket
+            labels:
+              severity: info
+              
+          # UTXO set size anomaly
+          - uid: utxo_anomaly
+            title: UTXO Set Size Anomaly
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 3600
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: abs(rate(kubercoin_utxo_count[1h])) > 1000
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 10m
+            annotations:
+              description: 'UTXO set size changing rapidly: {{ $value }}/hour'
+              summary: Unusual UTXO set growth detected
+            labels:
+              severity: warning
+              
+          # Node uptime low (frequent restarts)
+          - uid: uptime_low
+            title: Frequent Node Restarts
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 3600
+                  to: 0
+                datasourceUid: prometheus
+                model:
+                  expr: kubercoin_uptime_seconds < 1800
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+            noDataState: NoData
+            execErrState: Alerting
+            for: 5m
+            annotations:
+              description: 'Node uptime is only {{ $value }} seconds'
+              summary: Node appears to be restarting frequently
+            labels:
+              severity: critical
+
+  notification-channels.yaml: |
+    apiVersion: 1
+    notifiers:
+      - name: Slack
+        type: slack
+        uid: slack_notifications
+        org_id: 1
+        is_default: true
+        send_reminder: false
+        frequency: 5m
+        settings:
+          url: ${SLACK_WEBHOOK_URL}
+          recipient: "#kubercoin-alerts"
+          username: Grafana
+          icon_emoji: ":chart_with_upwards_trend:"
+          mentionUsers: "@channel"
+          mentionGroups: ""
+          
+      - name: Email
+        type: email
+        uid: email_notifications
+        org_id: 1
+        is_default: false
+        send_reminder: true
+        frequency: 1h
+        settings:
+          addresses: connect@kuber-coin.com
+          autoResolve: true
+          
+      - name: PagerDuty
+        type: pagerduty
+        uid: pagerduty_notifications
+        org_id: 1
+        is_default: false
+        send_reminder: false
+        frequency: 5m
+        settings:
+          integrationKey: ${PAGERDUTY_INTEGRATION_KEY}
+          autoResolve: true
+          severity: critical
+
+---
+# Update Grafana deployment to include alert rules
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: kubercoin
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: grafana
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+            ephemeral-storage: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+            ephemeral-storage: "5Gi"
+        volumeMounts:
+        - name: alert-config
+          mountPath: /etc/grafana/provisioning/alerting
+      volumes:
+      - name: alert-config
+        configMap:
+          name: grafana-alerts

@@ -1,0 +1,136 @@
+.container {
+  width: 100%;
+  background: var(--kc-panel-glass);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table thead {
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.table th {
+  padding: 16px 20px;
+  font-weight: 700;
+  color: var(--kc-text-bright);
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 16px 20px;
+  color: var(--kc-text);
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.striped tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hoverable tbody tr {
+  transition: background 0.2s ease;
+}
+
+.hoverable tbody tr:hover {
+  background: var(--kc-panel-hover);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.compact th,
+.compact td {
+  padding: 10px 16px;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--kc-accent-blue);
+}
+
+.sortIcon {
+  margin-left: 8px;
+  opacity: 0.5;
+  font-size: 10px;
+}
+
+.copyCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cellContent {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loading,
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--kc-muted);
+  gap: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--kc-glass-border);
+  border-top-color: var(--kc-accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scrollbar */
+.wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wrapper::-webkit-scrollbar-thumb {
+  background: var(--kc-glass-border);
+  border-radius: 4px;
+}
+
+.wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--kc-muted);
+}

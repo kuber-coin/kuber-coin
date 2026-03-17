@@ -1,0 +1,36 @@
+name: Extended E2E
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  e2e-windows:
+    runs-on: windows-latest
+    env:
+      KUBERCOIN_API_KEYS: public_test_key_not_a_secret
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        run: |
+          cargo build --release
+
+      - name: Run Extended E2E
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # Run extended e2e; script manages its own node lifecycle
+          powershell -ExecutionPolicy Bypass -File tools\scripts\e2e_extended.ps1
+
+      - name: Upload JUnit Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-junit
+          path: reports/e2e-junit.xml
+          if-no-files-found: warn

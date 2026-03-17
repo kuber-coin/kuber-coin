@@ -1,0 +1,46 @@
+[Unit]
+Description=KuberCoin Full Node
+Documentation=https://kuber-coin.com
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kubercoin
+Group=kubercoin
+WorkingDirectory=/var/lib/kubercoin
+
+# Network mode: mainnet, testnet, or regtest
+Environment=KUBERCOIN_NETWORK=mainnet
+
+# Uncomment to enable API key authentication
+# Environment=KUBERCOIN_API_KEYS=your_key_here
+
+ExecStart=/usr/local/bin/kubercoin node 8633
+ExecStop=/bin/kill -SIGTERM $MAINPID
+
+Restart=always
+RestartSec=10
+TimeoutStartSec=60
+TimeoutStopSec=30
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/kubercoin
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+
+# Resource limits
+LimitNOFILE=65535
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

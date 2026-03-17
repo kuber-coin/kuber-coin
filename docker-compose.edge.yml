@@ -1,0 +1,60 @@
+# Edge reverse-proxy layer (TLS + routing + basic auth)
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.edge.yml \
+#     --env-file .env.production --env-file .env.edge up -d
+#
+# Exposes:
+# - 80/443 for web traffic (edge)
+# - 8633 for P2P traffic (node, via docker-compose.prod.yml)
+
+services:
+  # Do not expose app ports directly when using edge proxy.
+  explorer-web:
+    ports: []
+
+  wallet-web:
+    ports: []
+
+  ops-web:
+    ports: []
+
+  edge:
+    image: caddy:2.8-alpine
+    container_name: kubercoin-edge
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # Subdomains for public access
+      - EXPLORER_DOMAIN=${EXPLORER_DOMAIN:?Set EXPLORER_DOMAIN in .env.edge}
+      - WALLET_DOMAIN=${WALLET_DOMAIN:?Set WALLET_DOMAIN in .env.edge}
+      - OPS_DOMAIN=${OPS_DOMAIN:?Set OPS_DOMAIN in .env.edge}
+      - API_DOMAIN=${API_DOMAIN:?Set API_DOMAIN in .env.edge}
+      - WS_DOMAIN=${WS_DOMAIN:?Set WS_DOMAIN in .env.edge}
+      # Optional: RPC domain (can be set but remains disabled unless RPC auth vars are also set)
+      - RPC_DOMAIN=${RPC_DOMAIN:-rpc.invalid}
+      # Ops dashboard basic auth
+      - OPS_AUTH_USER=${OPS_AUTH_USER:?Set OPS_AUTH_USER in .env.edge}
+      # Use `caddy hash-password --plaintext 'your-password'` to generate
+      - OPS_AUTH_HASH=${OPS_AUTH_HASH:?Set OPS_AUTH_HASH in .env.edge}
+      # Optional: protect RPC behind basic auth (recommended)
+      - RPC_AUTH_USER=${RPC_AUTH_USER:-}
+      - RPC_AUTH_HASH=${RPC_AUTH_HASH:-}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - kubercoin-network
+    depends_on:
+      - explorer-web
+      - wallet-web
+      - ops-web
+      - node
+
+volumes:
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

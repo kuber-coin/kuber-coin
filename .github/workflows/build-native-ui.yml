@@ -1,0 +1,131 @@
+name: Build Native Mining UIs
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'apps/native/mining-ui/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/native/mining-ui/**'
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Restore dependencies
+        working-directory: apps/native/mining-ui/windows-winui3
+        run: dotnet restore
+      
+      - name: Build
+        working-directory: apps/native/mining-ui/windows-winui3
+        run: dotnet build --configuration Release --no-restore
+      
+      - name: Publish
+        working-directory: apps/native/mining-ui/windows-winui3
+        run: dotnet publish --configuration Release --output ./publish --self-contained true -r win-x64
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kubercoin-miner-windows-x64
+          path: apps/native/mining-ui/windows-winui3/publish/
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev libcairo2-dev pkg-config
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/native/mining-ui/linux-gtk4
+      
+      - name: Build
+        working-directory: apps/native/mining-ui/linux-gtk4
+        run: cargo build --release
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kubercoin-miner-linux-x64
+          path: apps/native/mining-ui/linux-gtk4/target/release/kubercoin-miner-gtk
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      
+      - name: Build
+        working-directory: apps/native/mining-ui/macos-swiftui
+        run: |
+          xcodebuild -project KuberCoinMiner.xcodeproj \
+            -scheme KuberCoinMiner \
+            -configuration Release \
+            -derivedDataPath ./build \
+            build
+      
+      - name: Create DMG
+        working-directory: apps/native/mining-ui/macos-swiftui
+        run: |
+          mkdir -p dist
+          cp -R build/Build/Products/Release/KuberCoinMiner.app dist/
+          hdiutil create -volname "KuberCoin Miner" \
+            -srcfolder dist \
+            -ov -format UDZO \
+            KuberCoinMiner.dmg
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kubercoin-miner-macos-universal
+          path: apps/native/mining-ui/macos-swiftui/KuberCoinMiner.dmg
+
+  create-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Package artifacts
+        run: |
+          cd artifacts
+          zip -r ../kubercoin-miner-windows-x64.zip kubercoin-miner-windows-x64
+          tar czf ../kubercoin-miner-linux-x64.tar.gz kubercoin-miner-linux-x64
+          cp kubercoin-miner-macos-universal/KuberCoinMiner.dmg ../
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ui-v${{ github.run_number }}
+          name: Native Mining UI v${{ github.run_number }}
+          files: |
+            kubercoin-miner-windows-x64.zip
+            kubercoin-miner-linux-x64.tar.gz
+            KuberCoinMiner.dmg

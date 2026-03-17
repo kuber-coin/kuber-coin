@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test-console", "tools\test-console\test-console.csproj", "{5A5191DA-DAE1-134B-AA2E-C08DB7D39415}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "native-mining-ui", "native-mining-ui", "{B980A992-7A3B-3F22-8D21-1F7E81B06EBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "windows-winui3", "windows-winui3", "{84A43969-5608-D278-EDE5-444F7E8F95B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KuberCoinMiner", "native-mining-ui\windows-winui3\KuberCoinMiner.csproj", "{40C2CFE3-3147-2DE4-3832-B6448B72A0B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "native-mining-ui\windows-winui3\TestConsole.csproj", "{B8E0056E-C6C9-ADF7-A7F2-C225B3EED17D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A5191DA-DAE1-134B-AA2E-C08DB7D39415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5191DA-DAE1-134B-AA2E-C08DB7D39415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5191DA-DAE1-134B-AA2E-C08DB7D39415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5191DA-DAE1-134B-AA2E-C08DB7D39415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40C2CFE3-3147-2DE4-3832-B6448B72A0B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40C2CFE3-3147-2DE4-3832-B6448B72A0B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40C2CFE3-3147-2DE4-3832-B6448B72A0B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40C2CFE3-3147-2DE4-3832-B6448B72A0B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E0056E-C6C9-ADF7-A7F2-C225B3EED17D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E0056E-C6C9-ADF7-A7F2-C225B3EED17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E0056E-C6C9-ADF7-A7F2-C225B3EED17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E0056E-C6C9-ADF7-A7F2-C225B3EED17D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{84A43969-5608-D278-EDE5-444F7E8F95B5} = {B980A992-7A3B-3F22-8D21-1F7E81B06EBB}
+		{40C2CFE3-3147-2DE4-3832-B6448B72A0B7} = {84A43969-5608-D278-EDE5-444F7E8F95B5}
+		{B8E0056E-C6C9-ADF7-A7F2-C225B3EED17D} = {84A43969-5608-D278-EDE5-444F7E8F95B5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AF18552D-B3AD-4F5F-806E-92F4D216FD52}
+	EndGlobalSection
+EndGlobal

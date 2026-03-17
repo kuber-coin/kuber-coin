@@ -1,0 +1,59 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  background: rgba(96, 165, 250, 0.1);
+  color: var(--kc-accent-blue, #60a5fa);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.button:hover {
+  background: rgba(96, 165, 250, 0.2);
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.sm {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.md {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.icon {
+  padding: 8px;
+}
+
+.icon .icon {
+  font-size: 16px;
+}
+
+.copied {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--kc-good, #10b981);
+  animation: success 0.3s ease;
+}
+
+@keyframes success {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

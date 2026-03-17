@@ -1,0 +1,25 @@
+{
+  "name": "kubercoin-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for KuberCoin web applications",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:explorer": "playwright test tests/explorer.spec.ts",
+    "test:wallet": "playwright test tests/wallet.spec.ts",
+    "test:ops": "playwright test tests/ops.spec.ts",
+    "test:websocket": "playwright test tests/websocket.spec.ts",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.0"
+  }
+}

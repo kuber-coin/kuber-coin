@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KuberCoin Mining Pool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #f39c12;
+            margin-bottom: 40px;
+        }
+        h1 { color: #f39c12; font-size: 2.5em; margin-bottom: 10px; }
+        .subtitle { color: #a0a0a0; font-size: 1.1em; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+        .card h2 { color: #f39c12; margin-bottom: 20px; font-size: 1.3em; }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: #a0a0a0; }
+        .stat-value { color: #4ecdc4; font-weight: bold; }
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            height: 300px;
+            margin-bottom: 40px;
+        }
+        .workers-table {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid rgba(243, 156, 18, 0.5);
+            color: #f39c12;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-active { color: #2ecc71; }
+        .status-inactive { color: #95a5a6; }
+        .connect-info {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .connect-info h3 { color: #f39c12; margin-bottom: 15px; }
+        .connect-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #4ecdc4;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⛏️ KuberCoin Mining Pool</h1>
+            <div class="subtitle">Decentralized mining with fair rewards</div>
+        </header>
+
+        <div class="connect-info">
+            <h3>🔗 Connect Your Miner</h3>
+            <div><strong>Pool URL:</strong></div>
+            <div class="connect-code">stratum+tcp://localhost:3334</div>
+            <div><strong>Example Command:</strong></div>
+            <div class="connect-code">minerd -a sha256d -o stratum+tcp://localhost:3334 -u worker1 -p x</div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Pool Statistics</h2>
+                <div class="stat-row">
+                    <span class="stat-label">Pool Hashrate</span>
+                    <span class="stat-value" id="poolHashrate">0 H/s</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Active Workers</span>
+                    <span class="stat-value" id="activeWorkers">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Shares</span>
+                    <span class="stat-value" id="totalShares">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Blocks Found</span>
+                    <span class="stat-value" id="blocksFound">0</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💰 Rewards</h2>
+                <div class="stat-row">
+                    <span class="stat-label">Current Block</span>
+                    <span class="stat-value" id="currentBlock">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Block Reward</span>
+                    <span class="stat-value">50,000,000 KBC</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Pool Fee</span>
+                    <span class="stat-value">1%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Payment Model</span>
+                    <span class="stat-value">PPLNS</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📈 Network Info</h2>
+                <div class="stat-row">
+                    <span class="stat-label">Network Height</span>
+                    <span class="stat-value" id="networkHeight">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Network Hashrate</span>
+                    <span class="stat-value" id="networkHashrate">~ Est.</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Difficulty</span>
+                    <span class="stat-value" id="difficulty">1.0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Next Retarget</span>
+                    <span class="stat-value" id="nextRetarget">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 style="color: #f39c12; margin-bottom: 20px;">📊 Hashrate History (24h)</h2>
+            <div style="color: #a0a0a0; text-align: center; padding-top: 100px;">
+                Chart visualization coming soon...
+            </div>
+        </div>
+
+        <div class="workers-table">
+            <h2 style="color: #f39c12; margin-bottom: 20px;">👷 Active Workers</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Worker</th>
+                        <th>Status</th>
+                        <th>Hashrate</th>
+                        <th>Shares</th>
+                        <th>Last Share</th>
+                        <th>Accepted</th>
+                        <th>Rejected</th>
+                    </tr>
+                </thead>
+                <tbody id="workersBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #a0a0a0; padding: 40px;">
+                            No active workers. Connect your miner to get started!
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        const RPC_URL = 'http://localhost:8332/';
+
+        async function rpcCall(method, params = []) {
+            const res = await fetch(RPC_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: method,
+                    params: params,
+                    id: Date.now()
+                })
+            });
+            const json = await res.json();
+            if (json.error) throw new Error(json.error.message);
+            return json.result;
+        }
+
+        function updateStats() {
+            return rpcCall('getblockcount')
+                .then((height) => {
+                    document.getElementById('networkHeight').textContent = height;
+                    document.getElementById('currentBlock').textContent = height + 1;
+
+                    // Calculate next retarget (every 2016 blocks)
+                    const nextRetarget = 2016 - (height % 2016);
+                    document.getElementById('nextRetarget').textContent = `${nextRetarget} blocks`;
+
+                    // Mock pool stats (would come from pool server API)
+                    document.getElementById('poolHashrate').textContent = '0 H/s';
+                    document.getElementById('activeWorkers').textContent = '0';
+                    document.getElementById('totalShares').textContent = '0';
+                    document.getElementById('blocksFound').textContent = '0';
+                })
+                .catch((err) => {
+                    console.error('Stats error:', err);
+                });
+        }
+
+        // Initial load (top-level await)
+        try {
+            const height = await rpcCall('getblockcount');
+            document.getElementById('networkHeight').textContent = height;
+            document.getElementById('currentBlock').textContent = height + 1;
+
+            // Calculate next retarget (every 2016 blocks)
+            const nextRetarget = 2016 - (height % 2016);
+            document.getElementById('nextRetarget').textContent = `${nextRetarget} blocks`;
+
+            // Mock pool stats (would come from pool server API)
+            document.getElementById('poolHashrate').textContent = '0 H/s';
+            document.getElementById('activeWorkers').textContent = '0';
+            document.getElementById('totalShares').textContent = '0';
+            document.getElementById('blocksFound').textContent = '0';
+        } catch (err) {
+            console.error('Stats error:', err);
+        }
+
+        // Refresh every 5 seconds
+        setInterval(() => {
+            void updateStats();
+        }, 5000);
+    </script>
+</body>
+</html>

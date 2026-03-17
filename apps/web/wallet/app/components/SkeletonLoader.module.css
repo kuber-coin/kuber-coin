@@ -1,0 +1,169 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--kc-panel-hover) 0%,
+    var(--kc-panel-solid) 50%,
+    var(--kc-panel-hover) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--kc-radius);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Text Skeleton */
+.text {
+  height: 16px;
+  width: 100%;
+}
+
+/* Card Skeleton */
+.skeletonCard {
+  padding: 24px;
+  background: var(--kc-glass-bg);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  backdrop-filter: blur(16px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  height: 24px;
+  width: 150px;
+}
+
+.badge {
+  height: 24px;
+  width: 60px;
+  border-radius: 12px;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Stat Card Skeleton */
+.skeletonStat {
+  display: flex;
+  gap: 16px;
+  padding: 24px;
+  background: var(--kc-glass-bg);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  backdrop-filter: blur(16px);
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.statContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  height: 14px;
+  width: 80px;
+}
+
+.value {
+  height: 28px;
+  width: 120px;
+}
+
+.trend {
+  height: 14px;
+  width: 60px;
+}
+
+/* Table Skeleton */
+.skeletonTable {
+  width: 100%;
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  overflow: hidden;
+}
+
+.tableHeader,
+.tableRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.tableHeader {
+  background: var(--kc-panel-hover);
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--kc-glass-border);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableCell {
+  height: 16px;
+}
+
+/* Chart Skeleton */
+.skeletonChart {
+  padding: 24px;
+  background: var(--kc-glass-bg);
+  border: 1px solid var(--kc-glass-border);
+  border-radius: var(--kc-radius);
+  backdrop-filter: blur(16px);
+}
+
+.chartBars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100%;
+  gap: 12px;
+}
+
+.chartBar {
+  flex: 1;
+  min-height: 20%;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Avatar Skeleton */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Button Skeleton */
+.button {
+  height: 40px;
+  width: 120px;
+  border-radius: var(--kc-radius);
+}

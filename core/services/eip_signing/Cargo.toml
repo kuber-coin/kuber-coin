@@ -1,0 +1,29 @@
+[package]
+name = "kubercoin-eip-signing"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "EIP-191 / EIP-712 structured-data signing and Ethereum address derivation for KuberCoin wallets"
+
+[dependencies]
+# Cryptography — same curve as Ethereum (secp256k1)
+secp256k1.workspace = true
+sha3.workspace = true
+sha2.workspace = true
+hex.workspace = true
+rand.workspace = true
+
+# Serialization
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+
+# Error handling
+thiserror.workspace = true
+anyhow.workspace = true
+
+[dev-dependencies]
+hex.workspace = true

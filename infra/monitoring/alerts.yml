@@ -1,0 +1,113 @@
+groups:
+  - name: kubercoin.alerts
+    interval: 10s
+    rules:
+      - alert: KubercoinNodeDown
+        expr: up{job="kubercoin-node"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: kubercoin
+          component: node
+        annotations:
+          summary: "Kubercoin node scrape is down"
+          description: "Prometheus cannot scrape kubercoin-node (job=kubercoin-node)."
+
+      - alert: KubercoinMetricsMissing
+        expr: absent(kubercoin_block_height)
+        for: 1m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: node
+        annotations:
+          summary: "Kubercoin metrics missing"
+          description: "kubercoin_block_height is absent; metrics endpoint may be broken."
+
+      - alert: KubercoinNoNewBlocks
+        expr: changes(kubercoin_block_height[30m]) == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: mining
+        annotations:
+          summary: "No new blocks in 30 minutes"
+          description: "Block height has not changed in 30 minutes. Mining may be stalled or the node is disconnected."
+
+      - alert: KubercoinHighBlockTime
+        expr: increase(kubercoin_block_height[1h]) < 2
+        for: 10m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: mining
+        annotations:
+          summary: "Fewer than 2 blocks in the last hour"
+          description: "Block height increased by only {{ $value }} in the last hour (target: ~6). Mining throughput may be degraded."
+
+      - alert: KubercoinPeerCountLow
+        expr: kubercoin_peers < 3
+        for: 5m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: network
+        annotations:
+          summary: "Low peer count ({{ $value }})"
+          description: "Node has fewer than 3 connected peers. May indicate network partitioning."
+
+      - alert: KubercoinNoPeers
+        expr: kubercoin_peers == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: kubercoin
+          component: network
+        annotations:
+          summary: "Node has zero peers"
+          description: "Node is completely isolated from the network."
+
+      - alert: KubercoinMempoolBacklog
+        expr: kubercoin_mempool_size > 5000
+        for: 10m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: mempool
+        annotations:
+          summary: "Mempool backlog ({{ $value }} txs)"
+          description: "Mempool has over 5000 pending transactions. Consider increasing block size or checking mining."
+
+      - alert: KubercoinStorageLarge
+        expr: kubercoin_utxo_count > 50000000
+        for: 10m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: storage
+        annotations:
+          summary: "UTXO set exceeds 50 million entries"
+          description: "UTXO set has {{ $value }} entries. Monitor memory and disk capacity."
+
+      - alert: KubercoinTipDivergence
+        expr: max(kubercoin_block_height) - min(kubercoin_block_height) > 2
+        for: 5m
+        labels:
+          severity: critical
+          service: kubercoin
+          component: consensus
+        annotations:
+          summary: "Tip divergence detected ({{ $value }} blocks)"
+          description: "Nodes differ by more than 2 blocks for over 5 minutes. Possible chain split or stuck node."
+
+      - alert: KubercoinAPISaturation
+        expr: rate(kubercoin_mempool_size[5m]) > 50
+        for: 5m
+        labels:
+          severity: warning
+          service: kubercoin
+          component: api
+        annotations:
+          summary: "Mempool growing rapidly ({{ $value }} tx/s)"
+          description: "Mempool size is increasing at over 50 tx/s for 5 minutes. Consider rate limiting or scaling."

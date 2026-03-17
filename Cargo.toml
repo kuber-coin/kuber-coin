@@ -1,0 +1,83 @@
+[workspace]
+resolver = "2"
+members = [
+    "core/core/chain",
+    "core/core/consensus",
+    "core/core/tx",
+    "core/core/storage",
+    "core/core/testnet",
+    "core/mining/miner",
+    "core/node",
+    "core/services/faucet",
+    "core/services/lightning",
+    "core/services/eip_signing",
+]
+exclude = [
+    "fuzz",
+    "core/tests/fuzz",
+    "apps/native/mining-ui/linux-gtk4",
+    "tools/tx-sender",
+]
+
+[workspace.package]
+version = "1.0.19"
+edition = "2021"
+authors = ["KuberCoin Contributors"]
+license = "MIT"
+repository = "https://github.com/kubercoin/kubercoin"
+homepage = "https://kuber-coin.com"
+description = "A Bitcoin-inspired cryptocurrency with SHA-256d PoW, UTXO model, and 21M supply cap"
+rust-version = "1.75"
+keywords = ["blockchain", "cryptocurrency", "bitcoin", "proof-of-work", "utxo"]
+categories = ["cryptography::cryptocurrencies"]
+
+[workspace.lints.clippy]
+# Enforce clean clippy across the workspace
+all = { level = "warn", priority = -1 }
+# Allow standard domain acronyms (API, AWS, HTLC, HMAC, etc.)
+upper_case_acronyms = "allow"
+
+[workspace.dependencies]
+# Cryptography
+sha2 = "0.10"
+sha3 = "0.10"
+secp256k1 = { version = "0.29", features = ["rand", "serde"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Synchronization
+parking_lot = "0.12"
+constant_time_eq = "0.3"
+
+# Utilities
+hex = "0.4"
+rand = "0.8"
+bs58 = "0.5"
+base64 = "0.22"
+tempfile = "3.13"
+tokio-test = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# ── Release profile: production-grade optimizations ──────────────
+[profile.release]
+opt-level = 3          # Maximum optimization
+lto = true             # Full/fat LTO — best dead-code elimination and binary size (5–15% smaller)
+codegen-units = 1      # Single codegen unit for best optimization
+strip = "symbols"      # Strip debug symbols from release binary
+panic = "abort"        # Abort on panic (smaller binary, no unwinding overhead)
+
+# ── Bench profile inherits release but keeps debug info ──────────
+[profile.bench]
+debug = true           # Keep debug info for profiling
+
+# ── Dev profile: compile external deps optimized for faster tests ─
+[profile.dev.package."*"]
+opt-level = 2          # Optimized deps (sled, secp256k1, ring, rayon) — faster test builds

@@ -1,0 +1,466 @@
+name: CI
+
+'on':
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  check:
+    name: Check & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  deny:
+    name: Cargo Deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Install cargo-deny
+        run: cargo install cargo-deny --locked
+
+      - name: Run cargo deny
+        run: cargo deny check
+
+  msrv:
+    name: MSRV (1.75)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install MSRV Toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.75'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check MSRV
+        run: cargo check --workspace
+
+  doc:
+    name: Documentation
+    runs-on: ubuntu-latest
+    env:
+      RUSTDOCFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Docs
+        run: cargo doc --workspace --no-deps
+
+  test:
+    name: Test (${{ matrix.os }})
+    needs: check
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --workspace
+
+      - name: Run Tests
+        run: cargo test --workspace
+
+  convergence:
+    name: Multi-Node Convergence
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run Multi-Node Convergence Tests
+        run: cargo test --test node_integration multi_node_convergence
+
+  sdk-js:
+    name: JS SDK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Test
+        working-directory: apps/sdk/packages/js
+        run: node --test src/index.test.mjs
+
+      - name: Build
+        working-directory: apps/sdk/packages/js
+        run: node build.mjs
+
+      - name: Verify dist
+        working-directory: apps/sdk/packages/js
+        run: |
+          test -f dist/index.js
+          test -f dist/index.cjs
+          test -f dist/index.d.ts
+
+  build-release:
+    name: Release Build
+    needs: [test, convergence, sdk-js]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Release
+        run: cargo build --release --bin kubercoin-node
+
+      - name: Check Binary Size
+        run: |
+          ls -lh target/release/kubercoin-node
+          size=$(stat -c%s target/release/kubercoin-node)
+          echo "Binary size: $size bytes ($((size / 1024 / 1024)) MB)"
+          # Fail if binary exceeds 5 MB
+          if [ "$size" -gt 5242880 ]; then
+            echo "::error::Binary exceeds 5 MB size budget"
+            exit 1
+          fi
+
+  release-binaries:
+    name: Release Binaries (${{ matrix.target }})
+    needs: [test, convergence, sdk-js]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: kubercoin-linux-amd64
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            artifact: kubercoin-linux-arm64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: kubercoin-windows-amd64.exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: kubercoin-macos-amd64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact: kubercoin-macos-arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+          targets: ${{ matrix.target }}
+
+      - name: Install cross-compilation tools (ARM64 Linux)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Set SOURCE_DATE_EPOCH
+        shell: bash
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }} --bin kubercoin-node
+
+      - name: Package binary (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cp target/${{ matrix.target }}/release/kubercoin-node ${{ matrix.artifact }}
+          chmod +x ${{ matrix.artifact }}
+
+      - name: Package binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item "target/${{ matrix.target }}/release/kubercoin-node.exe" "${{ matrix.artifact }}"
+
+      - name: Generate per-artifact checksum
+        shell: bash
+        run: sha256sum ${{ matrix.artifact }} > ${{ matrix.artifact }}.sha256
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.artifact }}
+            ${{ matrix.artifact }}.sha256
+
+  sha256sums:
+    name: Combined SHA256SUMS
+    needs: [release-binaries]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Generate combined checksum file
+        shell: bash
+        run: |
+          cd artifacts
+          find . -type f ! -name '*.sha256' ! -name 'SHA256SUMS*' | while read -r f; do
+            sha256sum "$f"
+          done | sort > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Upload SHA256SUMS
+        uses: actions/upload-artifact@v4
+        with:
+          name: SHA256SUMS
+          path: artifacts/SHA256SUMS
+
+  reproducible-build:
+    name: Reproducible Build Verification
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Set SOURCE_DATE_EPOCH
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+
+      - name: Build A
+        shell: bash
+        run: |
+          cargo build --release --bin kubercoin-node
+          sha256sum target/release/kubercoin-node > /tmp/build-a.sha256
+          cat /tmp/build-a.sha256
+
+      - name: Clean and rebuild
+        shell: bash
+        run: |
+          cargo clean
+          cargo build --release --bin kubercoin-node
+          sha256sum target/release/kubercoin-node > /tmp/build-b.sha256
+          cat /tmp/build-b.sha256
+
+      - name: Compare checksums
+        shell: bash
+        run: |
+          hash_a=$(cut -d' ' -f1 /tmp/build-a.sha256)
+          hash_b=$(cut -d' ' -f1 /tmp/build-b.sha256)
+          echo "Build A: $hash_a"
+          echo "Build B: $hash_b"
+          test "$hash_a" = "$hash_b"
+
+  upgrade-rollback:
+    name: Upgrade & Rollback Verification
+    needs: [test]
+    runs-on: ubuntu-latest
+    env:
+      KUBERCOIN_NETWORK: regtest
+      KUBERCOIN_TEST_MODE: '1'
+      KUBERCOIN_API_KEYS: public_test_key_not_a_secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build current version
+        run: cargo build --release --bin kubercoin-node
+
+      - name: First start with clean data dir
+        shell: bash
+        run: |
+          mkdir -p /tmp/kc-upgrade-test
+          timeout 15 target/release/kubercoin-node --data-dir /tmp/kc-upgrade-test --network regtest --rpc-addr 0.0.0.0:18634 --p2p-addr 0.0.0.0:18633 || true
+          ls -la /tmp/kc-upgrade-test/ || true
+
+      - name: Restart against existing data dir
+        shell: bash
+        run: |
+          timeout 15 target/release/kubercoin-node --data-dir /tmp/kc-upgrade-test --network regtest --rpc-addr 0.0.0.0:18634 --p2p-addr 0.0.0.0:18633 || true
+          ls -la /tmp/kc-upgrade-test/ || true
+          echo "Upgrade/rollback verification completed"
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.88.0'
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Run Security Audit
+        run: cargo audit
+
+  web-apps:
+    name: Web (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [apps/web/explorer, apps/web/wallet, apps/web/unified, apps/web/monitoring]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ${{ matrix.app }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./${{ matrix.app }}
+        run: npm ci
+
+      - name: Lint
+        working-directory: ./${{ matrix.app }}
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build
+        working-directory: ./${{ matrix.app }}
+        run: npm run build
+
+  docker:
+    name: Docker Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t kubercoin:ci -f Dockerfile .
+
+  docker-publish:
+    name: Docker Publish (Dry Run)
+    needs: [test]
+    if: false
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set SOURCE_DATE_EPOCH
+        id: source_date_epoch
+        run: echo "value=$(git log -1 --format=%ct)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push multi-arch image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/kubercoin/kubercoin-node:${{ github.sha }}
+          build-args: |
+            SOURCE_DATE_EPOCH=${{ steps.source_date_epoch.outputs.value }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

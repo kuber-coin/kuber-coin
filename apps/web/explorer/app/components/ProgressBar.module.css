@@ -1,0 +1,108 @@
+.container {
+  width: 100%;
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--kc-text, #f0f4f9);
+}
+
+.percentage {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--kc-accent-blue, #60a5fa);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sm {
+  height: 6px;
+}
+
+.md {
+  height: 10px;
+}
+
+.lg {
+  height: 14px;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Variants */
+.default {
+  background: var(--kc-gradient-blue, linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #06b6d4 100%));
+}
+
+.success {
+  background: var(--kc-gradient-green, linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%));
+}
+
+.warning {
+  background: var(--kc-gradient-gold, linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%));
+}
+
+.error {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+}
+
+.gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 25%, #ef4444 50%, #f59e0b 75%, #10b981 100%);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+}

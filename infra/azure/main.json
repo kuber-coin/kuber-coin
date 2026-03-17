@@ -1,0 +1,1103 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.40.2.10011",
+      "templateHash": "9348716387642301219"
+    }
+  },
+  "parameters": {
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "azd environment name — injected automatically by azd as AZURE_ENV_NAME"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "eastus",
+      "metadata": {
+        "description": "Primary Azure region — injected automatically by azd as AZURE_LOCATION"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[format('rg-{0}', parameters('environmentName'))]",
+      "metadata": {
+        "description": "Primary resource group name"
+      }
+    },
+    "location2": {
+      "type": "string",
+      "defaultValue": "westeurope",
+      "metadata": {
+        "description": "Secondary Azure region for seed2 + monitoring stack"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_B1ms",
+      "metadata": {
+        "description": "VM SKU for both seed nodes"
+      }
+    },
+    "osDiskSizeGB": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "OS disk size in GB"
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "kubercoin",
+      "metadata": {
+        "description": "SSH admin username"
+      }
+    },
+    "adminSshPublicKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH public key for admin access"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {
+        "project": "kubercoin",
+        "managedBy": "azd"
+      },
+      "metadata": {
+        "description": "Additional resource tags"
+      }
+    }
+  },
+  "variables": {
+    "allTags": "[union(parameters('tags'), createObject('network', parameters('environmentName')))]",
+    "cloudInitSeed1": "IyEvYmluL2Jhc2gKIyBjbG91ZC1pbml0LnNoIOKAlCBTdGFydHVwIHNjcmlwdCBmb3IgS3ViZXJDb2luIHNlZWQxIChQMlAgc2VlZCBub2RlLCBFYXN0IFVTKQojIFRoaXMgZmlsZSBpcyBiYXNlNjQtZW5jb2RlZCBhbmQgcGFzc2VkIGFzIFZNIGN1c3RvbURhdGEgdmlhIEJpY2VwLgojIENsb3VkLWluaXQgcnVucyBpdCBvbmNlIG9uIGZpcnN0IGJvb3QgYXMgcm9vdC4KIwojIFdoYXQgdGhpcyBkb2VzOgojICAgMS4gSW5zdGFsbHMgRG9ja2VyICsgQ29tcG9zZSBwbHVnaW4KIyAgIDIuIFdyaXRlcyBkb2NrZXItY29tcG9zZS5zZWVkLnltbCBmb3Igc2VlZDEKIyAgIDMuIFN0YXJ0cyB0aGUgbm9kZSBhcyBhIHN5c3RlbWQgc2VydmljZSB2aWEgRG9ja2VyIENvbXBvc2UKCnNldCAtZXVvIHBpcGVmYWlsCgojIOKUgOKUgCBTeXN0ZW0gYmFzZWxpbmUg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmV4cG9ydCBERUJJQU5fRlJPTlRFTkQ9bm9uaW50ZXJhY3RpdmUKYXB0LWdldCB1cGRhdGUgLXFxCmFwdC1nZXQgaW5zdGFsbCAteSAtLW5vLWluc3RhbGwtcmVjb21tZW5kcyBcCiAgICBjYS1jZXJ0aWZpY2F0ZXMgXAogICAgY3VybCBcCiAgICBnbnVwZyBcCiAgICBsc2ItcmVsZWFzZQoKIyDilIDilIAgRG9ja2VyIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgAppbnN0YWxsIC1tIDA3NTUgLWQgL2V0Yy9hcHQva2V5cmluZ3MKY3VybCAtZnNTTCBodHRwczovL2Rvd25sb2FkLmRvY2tlci5jb20vbGludXgvdWJ1bnR1L2dwZyBcCiAgICB8IGdwZyAtLWRlYXJtb3IgLW8gL2V0Yy9hcHQva2V5cmluZ3MvZG9ja2VyLmdwZwpjaG1vZCBhK3IgL2V0Yy9hcHQva2V5cmluZ3MvZG9ja2VyLmdwZwoKZWNobyAiZGViIFthcmNoPSQoZHBrZyAtLXByaW50LWFyY2hpdGVjdHVyZSkgc2lnbmVkLWJ5PS9ldGMvYXB0L2tleXJpbmdzL2RvY2tlci5ncGddIFwKaHR0cHM6Ly9kb3dubG9hZC5kb2NrZXIuY29tL2xpbnV4L3VidW50dSBcCiQobHNiX3JlbGVhc2UgLWNzKSBzdGFibGUiIFwKICAgID4gL2V0Yy9hcHQvc291cmNlcy5saXN0LmQvZG9ja2VyLmxpc3QKCmFwdC1nZXQgdXBkYXRlIC1xcQphcHQtZ2V0IGluc3RhbGwgLXkgLS1uby1pbnN0YWxsLXJlY29tbWVuZHMgXAogICAgZG9ja2VyLWNlIFwKICAgIGRvY2tlci1jZS1jbGkgXAogICAgY29udGFpbmVyZC5pbyBcCiAgICBkb2NrZXItYnVpbGR4LXBsdWdpbiBcCiAgICBkb2NrZXItY29tcG9zZS1wbHVnaW4KCnN5c3RlbWN0bCBlbmFibGUgZG9ja2VyCnN5c3RlbWN0bCBzdGFydCBkb2NrZXIKCiMg4pSA4pSAIERpcmVjdG9yaWVzIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApta2RpciAtcCAvb3B0L2t1YmVyY29pbgpta2RpciAtcCAvZGF0YS9rdWJlcmNvaW4vc2VlZDEKCiMg4pSA4pSAIGRvY2tlci1jb21wb3NlLnNlZWQueW1sIChzZWVkMSwgbm8gbW9uaXRvcmluZykg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmNhdCA+IC9vcHQva3ViZXJjb2luL2RvY2tlci1jb21wb3NlLnltbCA8PCAnQ09NUE9TRScKdmVyc2lvbjogIjMuOSIKCnNlcnZpY2VzOgogIHNlZWQxOgogICAgaW1hZ2U6IGdoY3IuaW8va3ViZXJjb2luL2t1YmVyY29pbi1ub2RlOnRlc3RuZXQKICAgIGNvbnRhaW5lcl9uYW1lOiBrdWJlcmNvaW4tc2VlZDEKICAgIHJlc3RhcnQ6IHVubGVzcy1zdG9wcGVkCiAgICBwb3J0czoKICAgICAgLSAiMTg2MzM6MTg2MzMiICAgIyBQMlAgKHB1YmxpYykKICAgICAgLSAiODMzMjo4MzMyIiAgICAgIyBSUEMKICAgICAgLSAiODA4MDo4MDgwIiAgICAgIyBIVFRQIFJFU1QgQVBJCiAgICAgIC0gIjkwOTE6OTA5MSIgICAgICMgUHJvbWV0aGV1cyBtZXRyaWNzCiAgICB2b2x1bWVzOgogICAgICAtIC9kYXRhL2t1YmVyY29pbi9zZWVkMTovZGF0YS9rdWJlcmNvaW4KICAgIGVudmlyb25tZW50OgogICAgICBSVVNUX0xPRzogaW5mbwogICAgICBLVUJFUkNPSU5fTkVUV09SSzogdGVzdG5ldAogICAgICBLVUJFUkNPSU5fUDJQX0FERFI6ICIwLjAuMC4wOjE4NjMzIgogICAgICBLVUJFUkNPSU5fUlBDX0FERFI6ICIwLjAuMC4wOjgzMzIiCiAgICAgIEtVQkVSQ09JTl9BUElfQVVUSF9FTkFCTEVEOiAiZmFsc2UiCiAgICAgIEtVQkVSQ09JTl9BTExPV19JTlNFQ1VSRV9OT19BVVRIOiAidHJ1ZSIKICAgICAgIyBzZWVkMiBJUCBpcyBmaWxsZWQgaW4gYWZ0ZXIgYm90aCBWTXMgYXJlIHByb3Zpc2lvbmVkCiAgICAgICMgS1VCRVJDT0lOX0lOSVRJQUxfUEVFUlM6ICI8U0VFRDJfSVA+OjE4NjMzIgogICAgaGVhbHRoY2hlY2s6CiAgICAgIHRlc3Q6IFsiQ01ELVNIRUxMIiwgImN1cmwgLXNmIGh0dHA6Ly9sb2NhbGhvc3Q6ODMzMi9hcGkvaGVhbHRoIHx8IGV4aXQgMSJdCiAgICAgIGludGVydmFsOiAzMHMKICAgICAgdGltZW91dDogMTBzCiAgICAgIHJldHJpZXM6IDUKICAgICAgc3RhcnRfcGVyaW9kOiA2MHMKQ09NUE9TRQoKIyDilIDilIAgc3lzdGVtZCB1bml0IOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApjYXQgPiAvZXRjL3N5c3RlbWQvc3lzdGVtL2t1YmVyY29pbi1zZWVkMS5zZXJ2aWNlIDw8ICdVTklUJwpbVW5pdF0KRGVzY3JpcHRpb249S3ViZXJDb2luIFRlc3RuZXQgU2VlZCBOb2RlIDEKQWZ0ZXI9ZG9ja2VyLnNlcnZpY2UKUmVxdWlyZXM9ZG9ja2VyLnNlcnZpY2UKCltTZXJ2aWNlXQpUeXBlPW9uZXNob3QKUmVtYWluQWZ0ZXJFeGl0PXllcwpXb3JraW5nRGlyZWN0b3J5PS9vcHQva3ViZXJjb2luCkV4ZWNTdGFydD0vdXNyL2Jpbi9kb2NrZXIgY29tcG9zZSB1cCAtZApFeGVjU3RvcD0vdXNyL2Jpbi9kb2NrZXIgY29tcG9zZSBkb3duClJlc3RhcnQ9b24tZmFpbHVyZQoKW0luc3RhbGxdCldhbnRlZEJ5PW11bHRpLXVzZXIudGFyZ2V0ClVOSVQKCnN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCnN5c3RlbWN0bCBlbmFibGUga3ViZXJjb2luLXNlZWQxCnN5c3RlbWN0bCBzdGFydCBrdWJlcmNvaW4tc2VlZDEK",
+    "cloudInitSeed2": "IyEvYmluL2Jhc2gKIyBjbG91ZC1pbml0LW1vbml0b3Jpbmcuc2gg4oCUIFN0YXJ0dXAgc2NyaXB0IGZvciBLdWJlckNvaW4gc2VlZDIKIyAoUDJQIHNlZWQgbm9kZSArIFByb21ldGhldXMgKyBHcmFmYW5hLCBXZXN0IEV1cm9wZSkKIyBUaGlzIGZpbGUgaXMgYmFzZTY0LWVuY29kZWQgYW5kIHBhc3NlZCBhcyBWTSBjdXN0b21EYXRhIHZpYSBCaWNlcC4KCnNldCAtZXVvIHBpcGVmYWlsCgpleHBvcnQgREVCSUFOX0ZST05URU5EPW5vbmludGVyYWN0aXZlCmFwdC1nZXQgdXBkYXRlIC1xcQphcHQtZ2V0IGluc3RhbGwgLXkgLS1uby1pbnN0YWxsLXJlY29tbWVuZHMgXAogICAgY2EtY2VydGlmaWNhdGVzIFwKICAgIGN1cmwgXAogICAgZ251cGcgXAogICAgbHNiLXJlbGVhc2UKCiMg4pSA4pSAIERvY2tlciDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKaW5zdGFsbCAtbSAwNzU1IC1kIC9ldGMvYXB0L2tleXJpbmdzCmN1cmwgLWZzU0wgaHR0cHM6Ly9kb3dubG9hZC5kb2NrZXIuY29tL2xpbnV4L3VidW50dS9ncGcgXAogICAgfCBncGcgLS1kZWFybW9yIC1vIC9ldGMvYXB0L2tleXJpbmdzL2RvY2tlci5ncGcKY2htb2QgYStyIC9ldGMvYXB0L2tleXJpbmdzL2RvY2tlci5ncGcKCmVjaG8gImRlYiBbYXJjaD0kKGRwa2cgLS1wcmludC1hcmNoaXRlY3R1cmUpIHNpZ25lZC1ieT0vZXRjL2FwdC9rZXlyaW5ncy9kb2NrZXIuZ3BnXSBcCmh0dHBzOi8vZG93bmxvYWQuZG9ja2VyLmNvbS9saW51eC91YnVudHUgXAokKGxzYl9yZWxlYXNlIC1jcykgc3RhYmxlIiBcCiAgICA+IC9ldGMvYXB0L3NvdXJjZXMubGlzdC5kL2RvY2tlci5saXN0CgphcHQtZ2V0IHVwZGF0ZSAtcXEKYXB0LWdldCBpbnN0YWxsIC15IC0tbm8taW5zdGFsbC1yZWNvbW1lbmRzIFwKICAgIGRvY2tlci1jZSBcCiAgICBkb2NrZXItY2UtY2xpIFwKICAgIGNvbnRhaW5lcmQuaW8gXAogICAgZG9ja2VyLWJ1aWxkeC1wbHVnaW4gXAogICAgZG9ja2VyLWNvbXBvc2UtcGx1Z2luCgpzeXN0ZW1jdGwgZW5hYmxlIGRvY2tlcgpzeXN0ZW1jdGwgc3RhcnQgZG9ja2VyCgojIOKUgOKUgCBEaXJlY3RvcmllcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKbWtkaXIgLXAgL29wdC9rdWJlcmNvaW4KbWtkaXIgLXAgL2RhdGEva3ViZXJjb2luL3NlZWQyCm1rZGlyIC1wIC9ldGMva3ViZXJjb2luL3Byb21ldGhldXMKCiMg4pSA4pSAIFByb21ldGhldXMgY29uZmlndXJhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKY2F0ID4gL2V0Yy9rdWJlcmNvaW4vcHJvbWV0aGV1cy9wcm9tZXRoZXVzLnltbCA8PCAnUFJPTScKZ2xvYmFsOgogIHNjcmFwZV9pbnRlcnZhbDogMTVzCiAgZXZhbHVhdGlvbl9pbnRlcnZhbDogMTVzCgpzY3JhcGVfY29uZmlnczoKICAtIGpvYl9uYW1lOiAna3ViZXJjb2luLXNlZWQyJwogICAgc3RhdGljX2NvbmZpZ3M6CiAgICAgIC0gdGFyZ2V0czogWydzZWVkMjo5MDkxJ10KICAgICAgICBsYWJlbHM6CiAgICAgICAgICBub2RlOiAnc2VlZDInCiAgICAgICAgICByZWdpb246ICd3ZXN0ZXVyb3BlJwogICMgQWRkIHNlZWQxIGFmdGVyIHByb3Zpc2lvbmluZyBieSB1bmNvbW1lbnRpbmcgYW5kIGZpbGxpbmcgc2VlZDEgSVA6CiAgIyAtIGpvYl9uYW1lOiAna3ViZXJjb2luLXNlZWQxJwogICMgICBzdGF0aWNfY29uZmlnczoKICAjICAgICAtIHRhcmdldHM6IFsnPFNFRUQxX0lQPjo5MDkxJ10KICAjICAgICAgIGxhYmVsczoKICAjICAgICAgICAgbm9kZTogJ3NlZWQxJwogICMgICAgICAgICByZWdpb246ICdlYXN0dXMnClBST00KCiMg4pSA4pSAIGRvY2tlci1jb21wb3NlIChzZWVkMiArIG1vbml0b3JpbmcpIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApjYXQgPiAvb3B0L2t1YmVyY29pbi9kb2NrZXItY29tcG9zZS55bWwgPDwgJ0NPTVBPU0UnCnZlcnNpb246ICIzLjkiCgpzZXJ2aWNlczoKICBzZWVkMjoKICAgIGltYWdlOiBnaGNyLmlvL2t1YmVyY29pbi9rdWJlcmNvaW4tbm9kZTp0ZXN0bmV0CiAgICBjb250YWluZXJfbmFtZToga3ViZXJjb2luLXNlZWQyCiAgICByZXN0YXJ0OiB1bmxlc3Mtc3RvcHBlZAogICAgcG9ydHM6CiAgICAgIC0gIjE4NjMzOjE4NjMzIiAgICMgUDJQIChwdWJsaWMpCiAgICAgIC0gIjgzMzI6ODMzMiIgICAgICMgUlBDCiAgICAgIC0gIjgwODA6ODA4MCIgICAgICMgSFRUUCBSRVNUIEFQSQogICAgICAtICI5MDkxOjkwOTEiICAgICAjIFByb21ldGhldXMgbWV0cmljcwogICAgdm9sdW1lczoKICAgICAgLSAvZGF0YS9rdWJlcmNvaW4vc2VlZDI6L2RhdGEva3ViZXJjb2luCiAgICBlbnZpcm9ubWVudDoKICAgICAgUlVTVF9MT0c6IGluZm8KICAgICAgS1VCRVJDT0lOX05FVFdPUks6IHRlc3RuZXQKICAgICAgS1VCRVJDT0lOX1AyUF9BRERSOiAiMC4wLjAuMDoxODYzMyIKICAgICAgS1VCRVJDT0lOX1JQQ19BRERSOiAiMC4wLjAuMDo4MzMyIgogICAgICBLVUJFUkNPSU5fQVBJX0FVVEhfRU5BQkxFRDogImZhbHNlIgogICAgICBLVUJFUkNPSU5fQUxMT1dfSU5TRUNVUkVfTk9fQVVUSDogInRydWUiCiAgICAgICMgc2VlZDEgSVAgaXMgZmlsbGVkIGluIGFmdGVyIGJvdGggVk1zIGFyZSBwcm92aXNpb25lZAogICAgICAjIEtVQkVSQ09JTl9JTklUSUFMX1BFRVJTOiAiPFNFRUQxX0lQPjoxODYzMyIKICAgIGhlYWx0aGNoZWNrOgogICAgICB0ZXN0OiBbIkNNRC1TSEVMTCIsICJjdXJsIC1zZiBodHRwOi8vbG9jYWxob3N0OjgzMzIvYXBpL2hlYWx0aCB8fCBleGl0IDEiXQogICAgICBpbnRlcnZhbDogMzBzCiAgICAgIHRpbWVvdXQ6IDEwcwogICAgICByZXRyaWVzOiA1CiAgICAgIHN0YXJ0X3BlcmlvZDogNjBzCiAgICBuZXR3b3JrczoKICAgICAgLSBtb25pdG9yaW5nCgogIHByb21ldGhldXM6CiAgICBpbWFnZTogcHJvbS9wcm9tZXRoZXVzOnYyLjUxLjIKICAgIGNvbnRhaW5lcl9uYW1lOiBrdWJlcmNvaW4tcHJvbWV0aGV1cwogICAgcmVzdGFydDogdW5sZXNzLXN0b3BwZWQKICAgIHBvcnRzOgogICAgICAtICI5MDkyOjkwOTAiCiAgICB2b2x1bWVzOgogICAgICAtIC9ldGMva3ViZXJjb2luL3Byb21ldGhldXM6L2V0Yy9wcm9tZXRoZXVzOnJvCiAgICAgIC0gcHJvbWV0aGV1cy1kYXRhOi9wcm9tZXRoZXVzCiAgICBjb21tYW5kOgogICAgICAtICctLWNvbmZpZy5maWxlPS9ldGMvcHJvbWV0aGV1cy9wcm9tZXRoZXVzLnltbCcKICAgICAgLSAnLS1zdG9yYWdlLnRzZGIucGF0aD0vcHJvbWV0aGV1cycKICAgICAgLSAnLS1zdG9yYWdlLnRzZGIucmV0ZW50aW9uLnRpbWU9MzBkJwogICAgbmV0d29ya3M6CiAgICAgIC0gbW9uaXRvcmluZwoKICBncmFmYW5hOgogICAgaW1hZ2U6IGdyYWZhbmEvZ3JhZmFuYToxMC40LjIKICAgIGNvbnRhaW5lcl9uYW1lOiBrdWJlcmNvaW4tZ3JhZmFuYQogICAgcmVzdGFydDogdW5sZXNzLXN0b3BwZWQKICAgIHBvcnRzOgogICAgICAtICIzMDAwOjMwMDAiCiAgICBlbnZpcm9ubWVudDoKICAgICAgR0ZfU0VDVVJJVFlfQURNSU5fUEFTU1dPUkQ6ICJjaGFuZ2VtZV9vbl9maXJzdF9sb2dpbiIKICAgICAgR0ZfVVNFUlNfQUxMT1dfU0lHTl9VUDogImZhbHNlIgogICAgdm9sdW1lczoKICAgICAgLSBncmFmYW5hLWRhdGE6L3Zhci9saWIvZ3JhZmFuYQogICAgbmV0d29ya3M6CiAgICAgIC0gbW9uaXRvcmluZwoKdm9sdW1lczoKICBwcm9tZXRoZXVzLWRhdGE6CiAgZ3JhZmFuYS1kYXRhOgoKbmV0d29ya3M6CiAgbW9uaXRvcmluZzoKICAgIGRyaXZlcjogYnJpZGdlCkNPTVBPU0UKCiMg4pSA4pSAIHN5c3RlbWQgdW5pdCDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKY2F0ID4gL2V0Yy9zeXN0ZW1kL3N5c3RlbS9rdWJlcmNvaW4tc2VlZDIuc2VydmljZSA8PCAnVU5JVCcKW1VuaXRdCkRlc2NyaXB0aW9uPUt1YmVyQ29pbiBUZXN0bmV0IFNlZWQgTm9kZSAyICsgTW9uaXRvcmluZyBTdGFjawpBZnRlcj1kb2NrZXIuc2VydmljZQpSZXF1aXJlcz1kb2NrZXIuc2VydmljZQoKW1NlcnZpY2VdClR5cGU9b25lc2hvdApSZW1haW5BZnRlckV4aXQ9eWVzCldvcmtpbmdEaXJlY3Rvcnk9L29wdC9rdWJlcmNvaW4KRXhlY1N0YXJ0PS91c3IvYmluL2RvY2tlciBjb21wb3NlIHVwIC1kCkV4ZWNTdG9wPS91c3IvYmluL2RvY2tlciBjb21wb3NlIGRvd24KUmVzdGFydD1vbi1mYWlsdXJlCgpbSW5zdGFsbF0KV2FudGVkQnk9bXVsdGktdXNlci50YXJnZXQKVU5JVAoKc3lzdGVtY3RsIGRhZW1vbi1yZWxvYWQKc3lzdGVtY3RsIGVuYWJsZSBrdWJlcmNvaW4tc2VlZDIKc3lzdGVtY3RsIHN0YXJ0IGt1YmVyY29pbi1zZWVkMgo="
+  },
+  "resources": {
+    "rg": {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('resourceGroupName')]",
+      "location": "[parameters('location')]",
+      "tags": "[union(variables('allTags'), createObject('azd-env-name', parameters('environmentName')))]"
+    },
+    "identity": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('identity-{0}', uniqueString('identity', deployment().name))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "environmentName": {
+            "value": "[parameters('environmentName')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "9872258378805149678"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for the managed identity"
+              }
+            },
+            "environmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Environment name — used to name the identity"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Tags to apply"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2023-01-31",
+              "name": "[format('id-kubercoin-{0}', parameters('environmentName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            }
+          ],
+          "outputs": {
+            "identityId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the managed identity"
+              },
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-kubercoin-{0}', parameters('environmentName')))]"
+            },
+            "identityClientId": {
+              "type": "string",
+              "metadata": {
+                "description": "Client ID of the managed identity"
+              },
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-kubercoin-{0}', parameters('environmentName'))), '2023-01-31').clientId]"
+            },
+            "identityPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Principal ID of the managed identity"
+              },
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-kubercoin-{0}', parameters('environmentName'))), '2023-01-31').principalId]"
+            }
+          }
+        }
+      },
+      "dependsOn": ["rg"]
+    },
+    "nsg1": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('nsg1-{0}', uniqueString('nsg1', deployment().name))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "nsgName": {
+            "value": "nsg-kubercoin-seed1"
+          },
+          "enableMonitoring": {
+            "value": false
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "3299161801207981724"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for the NSG"
+              }
+            },
+            "nsgName": {
+              "type": "string",
+              "defaultValue": "nsg-kubercoin-seed",
+              "metadata": {
+                "description": "Name for the NSG resource"
+              }
+            },
+            "enableMonitoring": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Open monitoring ports (3000 Grafana, 9092 Prometheus) — only for seed2"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Tags to apply to the NSG"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('nsgName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "allow-ssh",
+                    "properties": {
+                      "priority": 100,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "22",
+                      "description": "SSH management access"
+                    }
+                  },
+                  {
+                    "name": "allow-p2p",
+                    "properties": {
+                      "priority": 110,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "18633",
+                      "description": "KuberCoin testnet P2P"
+                    }
+                  },
+                  {
+                    "name": "allow-rpc",
+                    "properties": {
+                      "priority": 120,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "8332",
+                      "description": "KuberCoin JSON-RPC"
+                    }
+                  },
+                  {
+                    "name": "allow-http-api",
+                    "properties": {
+                      "priority": 130,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "8080",
+                      "description": "KuberCoin HTTP REST API"
+                    }
+                  },
+                  {
+                    "name": "allow-metrics",
+                    "properties": {
+                      "priority": 140,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "9091",
+                      "description": "KuberCoin Prometheus metrics endpoint"
+                    }
+                  },
+                  {
+                    "name": "allow-grafana",
+                    "properties": {
+                      "priority": 150,
+                      "direction": "Inbound",
+                      "access": "[if(parameters('enableMonitoring'), 'Allow', 'Deny')]",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "3000",
+                      "description": "Grafana dashboard"
+                    }
+                  },
+                  {
+                    "name": "allow-prometheus",
+                    "properties": {
+                      "priority": 160,
+                      "direction": "Inbound",
+                      "access": "[if(parameters('enableMonitoring'), 'Allow', 'Deny')]",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "9092",
+                      "description": "Prometheus UI"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "outputs": {
+            "nsgId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the created NSG"
+              },
+              "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": ["rg"]
+    },
+    "vm1": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('vm1-{0}', uniqueString('vm1', deployment().name))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "vmName": {
+            "value": "kubercoin-seed1"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "osDiskSizeGB": {
+            "value": "[parameters('osDiskSizeGB')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminSshPublicKey": {
+            "value": "[parameters('adminSshPublicKey')]"
+          },
+          "nsgId": {
+            "value": "[reference('nsg1').outputs.nsgId.value]"
+          },
+          "cloudInitData": {
+            "value": "[variables('cloudInitSeed1')]"
+          },
+          "tags": {
+            "value": "[union(variables('allTags'), createObject('role', 'seed1'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "15960320231211710480"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region"
+              }
+            },
+            "vmName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name for the VM and related resources"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B1ms",
+              "metadata": {
+                "description": "VM SKU"
+              }
+            },
+            "osDiskSizeGB": {
+              "type": "int",
+              "defaultValue": 30,
+              "metadata": {
+                "description": "OS disk size in GB"
+              }
+            },
+            "adminUsername": {
+              "type": "string",
+              "metadata": {
+                "description": "Admin username"
+              }
+            },
+            "adminSshPublicKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "SSH public key for admin access"
+              }
+            },
+            "nsgId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the NSG to attach to the NIC"
+              }
+            },
+            "cloudInitData": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Base64-encoded cloud-init script"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Tags applied to all resources"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/publicIPAddresses",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}-pip', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "Standard"
+              },
+              "properties": {
+                "publicIPAllocationMethod": "Static",
+                "dnsSettings": {
+                  "domainNameLabel": "[parameters('vmName')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}-vnet', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": ["10.0.0.0/16"]
+                },
+                "subnets": [
+                  {
+                    "name": "default",
+                    "properties": {
+                      "addressPrefix": "10.0.0.0/24",
+                      "networkSecurityGroup": {
+                        "id": "[parameters('nsgId')]"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}-nic', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIPAddress": {
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('vmName')))]"
+                      },
+                      "subnet": {
+                        "id": "[reference(resourceId('Microsoft.Network/virtualNetworks', format('{0}-vnet', parameters('vmName'))), '2024-01-01').subnets[0].id]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('vmName')))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', format('{0}-vnet', parameters('vmName')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('vmName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "createOption": "FromImage",
+                    "diskSizeGB": "[parameters('osDiskSizeGB')]",
+                    "managedDisk": {
+                      "storageAccountType": "Standard_LRS"
+                    }
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('vmName')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('adminSshPublicKey')]"
+                        }
+                      ]
+                    }
+                  },
+                  "customData": "[parameters('cloudInitData')]"
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic', parameters('vmName')))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic', parameters('vmName')))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "publicIpAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Allocated public IP address"
+              },
+              "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('vmName'))), '2024-01-01').ipAddress]"
+            },
+            "vmId": {
+              "type": "string",
+              "metadata": {
+                "description": "VM resource ID"
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": ["nsg1", "rg"]
+    },
+    "nsg2": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('nsg2-{0}', uniqueString('nsg2', deployment().name))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location2')]"
+          },
+          "nsgName": {
+            "value": "nsg-kubercoin-seed2"
+          },
+          "enableMonitoring": {
+            "value": true
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "3299161801207981724"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for the NSG"
+              }
+            },
+            "nsgName": {
+              "type": "string",
+              "defaultValue": "nsg-kubercoin-seed",
+              "metadata": {
+                "description": "Name for the NSG resource"
+              }
+            },
+            "enableMonitoring": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Open monitoring ports (3000 Grafana, 9092 Prometheus) — only for seed2"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Tags to apply to the NSG"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "apiVersion": "2024-01-01",
+              "name": "[parameters('nsgName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "allow-ssh",
+                    "properties": {
+                      "priority": 100,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "22",
+                      "description": "SSH management access"
+                    }
+                  },
+                  {
+                    "name": "allow-p2p",
+                    "properties": {
+                      "priority": 110,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "18633",
+                      "description": "KuberCoin testnet P2P"
+                    }
+                  },
+                  {
+                    "name": "allow-rpc",
+                    "properties": {
+                      "priority": 120,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "8332",
+                      "description": "KuberCoin JSON-RPC"
+                    }
+                  },
+                  {
+                    "name": "allow-http-api",
+                    "properties": {
+                      "priority": 130,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "8080",
+                      "description": "KuberCoin HTTP REST API"
+                    }
+                  },
+                  {
+                    "name": "allow-metrics",
+                    "properties": {
+                      "priority": 140,
+                      "direction": "Inbound",
+                      "access": "Allow",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "9091",
+                      "description": "KuberCoin Prometheus metrics endpoint"
+                    }
+                  },
+                  {
+                    "name": "allow-grafana",
+                    "properties": {
+                      "priority": 150,
+                      "direction": "Inbound",
+                      "access": "[if(parameters('enableMonitoring'), 'Allow', 'Deny')]",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "3000",
+                      "description": "Grafana dashboard"
+                    }
+                  },
+                  {
+                    "name": "allow-prometheus",
+                    "properties": {
+                      "priority": 160,
+                      "direction": "Inbound",
+                      "access": "[if(parameters('enableMonitoring'), 'Allow', 'Deny')]",
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "9092",
+                      "description": "Prometheus UI"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "outputs": {
+            "nsgId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the created NSG"
+              },
+              "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": ["rg"]
+    },
+    "vm2": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('vm2-{0}', uniqueString('vm2', deployment().name))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location2')]"
+          },
+          "vmName": {
+            "value": "kubercoin-seed2"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "osDiskSizeGB": {
+            "value": "[parameters('osDiskSizeGB')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminSshPublicKey": {
+            "value": "[parameters('adminSshPublicKey')]"
+          },
+          "nsgId": {
+            "value": "[reference('nsg2').outputs.nsgId.value]"
+          },
+          "cloudInitData": {
+            "value": "[variables('cloudInitSeed2')]"
+          },
+          "tags": {
+            "value": "[union(variables('allTags'), createObject('role', 'seed2-monitoring'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "15960320231211710480"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region"
+              }
+            },
+            "vmName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name for the VM and related resources"
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_B1ms",
+              "metadata": {
+                "description": "VM SKU"
+              }
+            },
+            "osDiskSizeGB": {
+              "type": "int",
+              "defaultValue": 30,
+              "metadata": {
+                "description": "OS disk size in GB"
+              }
+            },
+            "adminUsername": {
+              "type": "string",
+              "metadata": {
+                "description": "Admin username"
+              }
+            },
+            "adminSshPublicKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "SSH public key for admin access"
+              }
+            },
+            "nsgId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the NSG to attach to the NIC"
+              }
+            },
+            "cloudInitData": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Base64-encoded cloud-init script"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Tags applied to all resources"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/publicIPAddresses",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}-pip', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "Standard"
+              },
+              "properties": {
+                "publicIPAllocationMethod": "Static",
+                "dnsSettings": {
+                  "domainNameLabel": "[parameters('vmName')]"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}-vnet', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": ["10.0.0.0/16"]
+                },
+                "subnets": [
+                  {
+                    "name": "default",
+                    "properties": {
+                      "addressPrefix": "10.0.0.0/24",
+                      "networkSecurityGroup": {
+                        "id": "[parameters('nsgId')]"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}-nic', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIPAddress": {
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('vmName')))]"
+                      },
+                      "subnet": {
+                        "id": "[reference(resourceId('Microsoft.Network/virtualNetworks', format('{0}-vnet', parameters('vmName'))), '2024-01-01').subnets[0].id]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('vmName')))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', format('{0}-vnet', parameters('vmName')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('vmName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "storageProfile": {
+                  "imageReference": {
+                    "publisher": "Canonical",
+                    "offer": "0001-com-ubuntu-server-jammy",
+                    "sku": "22_04-lts-gen2",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "createOption": "FromImage",
+                    "diskSizeGB": "[parameters('osDiskSizeGB')]",
+                    "managedDisk": {
+                      "storageAccountType": "Standard_LRS"
+                    }
+                  }
+                },
+                "osProfile": {
+                  "computerName": "[parameters('vmName')]",
+                  "adminUsername": "[parameters('adminUsername')]",
+                  "linuxConfiguration": {
+                    "disablePasswordAuthentication": true,
+                    "ssh": {
+                      "publicKeys": [
+                        {
+                          "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]",
+                          "keyData": "[parameters('adminSshPublicKey')]"
+                        }
+                      ]
+                    }
+                  },
+                  "customData": "[parameters('cloudInitData')]"
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic', parameters('vmName')))]"
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-nic', parameters('vmName')))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "publicIpAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Allocated public IP address"
+              },
+              "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('vmName'))), '2024-01-01').ipAddress]"
+            },
+            "vmId": {
+              "type": "string",
+              "metadata": {
+                "description": "VM resource ID"
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": ["nsg2", "rg"]
+    }
+  },
+  "outputs": {
+    "RESOURCE_GROUP_ID": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group resource ID — required by azd"
+      },
+      "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+    },
+    "seed1PublicIp": {
+      "type": "string",
+      "metadata": {
+        "description": "Public IP address of seed node 1 (East US)"
+      },
+      "value": "[reference('vm1').outputs.publicIpAddress.value]"
+    },
+    "seed2PublicIp": {
+      "type": "string",
+      "metadata": {
+        "description": "Public IP address of seed node 2 (West Europe)"
+      },
+      "value": "[reference('vm2').outputs.publicIpAddress.value]"
+    },
+    "dnsSeed1Instruction": {
+      "type": "string",
+      "metadata": {
+        "description": "DNS A record to create: testnet-seed.kuber-coin.com → seed1PublicIp"
+      },
+      "value": "[format('Add A record: testnet-seed.kuber-coin.com → {0}', reference('vm1').outputs.publicIpAddress.value)]"
+    },
+    "dnsSeed2Instruction": {
+      "type": "string",
+      "metadata": {
+        "description": "DNS A record to create: testnet2.kuber-coin.com → seed2PublicIp"
+      },
+      "value": "[format('Add A record: testnet2.kuber-coin.com → {0}', reference('vm2').outputs.publicIpAddress.value)]"
+    },
+    "grafanaUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Grafana dashboard URL (seed2)"
+      },
+      "value": "[format('http://{0}:3000', reference('vm2').outputs.publicIpAddress.value)]"
+    },
+    "prometheusUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Prometheus URL (seed2)"
+      },
+      "value": "[format('http://{0}:9092', reference('vm2').outputs.publicIpAddress.value)]"
+    }
+  }
+}

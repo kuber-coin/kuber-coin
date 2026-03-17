@@ -1,0 +1,54 @@
+.container {
+  width: 100%;
+}
+
+.sm {
+  margin: 12px 0;
+}
+
+.md {
+  margin: 24px 0;
+}
+
+.lg {
+  margin: 40px 0;
+}
+
+.line {
+  height: 1px;
+  width: 100%;
+}
+
+.solid {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashed {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.1) 50%, transparent 50%);
+  background-size: 8px 1px;
+}
+
+.gradient {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(96, 165, 250, 0.5) 20%, 
+    rgba(168, 85, 247, 0.5) 50%, 
+    rgba(96, 165, 250, 0.5) 80%, 
+    transparent 100%
+  );
+}
+
+.withLabel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kc-muted, rgba(148, 163, 184, 0.7));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}

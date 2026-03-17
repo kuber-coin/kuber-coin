@@ -1,0 +1,44 @@
+# Simplified Dockerfile to avoid manifest parsing issues
+# Pin Rust to a known version for reproducible builds.
+FROM rust:1.88.0-slim AS builder
+
+WORKDIR /usr/src/kubercoin
+
+# Copy everything
+COPY . .
+
+# Install build dependencies and build release binary
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        pkg-config \
+        libssl-dev \
+    && cargo build --release --bin kubercoin-node \
+    && rm -rf /var/lib/apt/lists/*
+
+# Runtime stage
+FROM debian:bookworm-slim
+
+# Install runtime deps, create user, and prep data dir
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        libssl3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 -s /bin/bash kubercoin \
+    && mkdir -p /data/kubercoin \
+    && chown -R kubercoin:kubercoin /data/kubercoin
+
+# Copy binary
+COPY --from=builder /usr/src/kubercoin/target/release/kubercoin-node /usr/local/bin/
+
+USER kubercoin
+WORKDIR /home/kubercoin
+
+EXPOSE 8633 8332 8080 9090 9091
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -sf http://127.0.0.1:8634/api/health || exit 1
+
+ENTRYPOINT ["kubercoin-node"]
+# RPC/P2P addresses are configured via env vars (KUBERCOIN_RPC_ADDR, KUBERCOIN_P2P_ADDR) in docker-compose

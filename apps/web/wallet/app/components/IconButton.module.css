@@ -1,0 +1,98 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button:not(:disabled):hover {
+  transform: scale(1.1);
+}
+
+.button:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+/* Sizes */
+.sm {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+.lg {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+/* Variants */
+.default {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--kc-text, #f0f4f9);
+}
+
+.default:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.primary {
+  background: rgba(96, 165, 250, 0.15);
+  color: var(--kc-accent-blue, #60a5fa);
+}
+
+.primary:not(:disabled):hover {
+  background: rgba(96, 165, 250, 0.25);
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+}
+
+.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--kc-good, #10b981);
+}
+
+.success:not(:disabled):hover {
+  background: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--kc-bad, #ef4444);
+}
+
+.danger:not(:disabled):hover {
+  background: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--kc-muted, rgba(148, 163, 184, 0.7));
+}
+
+.ghost:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--kc-text, #f0f4f9);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

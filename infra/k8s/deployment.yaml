@@ -1,0 +1,224 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubercoin
+  labels:
+    name: kubercoin
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kubercoin-data
+  namespace: kubercoin
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubercoin-node
+  namespace: kubercoin
+  labels:
+    app: kubercoin
+    component: node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubercoin
+      component: node
+  template:
+    metadata:
+      labels:
+        app: kubercoin
+        component: node
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8634"
+        prometheus.io/path: "/metrics"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: kubercoin
+        image: kubercoin:0.1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: p2p
+          containerPort: 8633
+          protocol: TCP
+        - name: rpc
+          containerPort: 8634
+          protocol: TCP
+        env:
+        - name: RUST_LOG
+          value: "info"
+        - name: KUBERCOIN_P2P_ADDR
+          value: "0.0.0.0:8633"
+        - name: KUBERCOIN_RPC_ADDR
+          value: "0.0.0.0:8634"
+        - name: KUBERCOIN_TLS_ENABLED
+          value: "false"
+        - name: KUBERCOIN_UPNP_ENABLED
+          value: "false"
+        volumeMounts:
+        - name: data
+          mountPath: /data/kubercoin
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+            ephemeral-storage: "10Gi"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8634
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8634
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: kubercoin-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubercoin-p2p
+  namespace: kubercoin
+  labels:
+    app: kubercoin
+    component: node
+spec:
+  type: LoadBalancer
+  ports:
+  - name: p2p
+    port: 8633
+    targetPort: 8633
+    protocol: TCP
+  selector:
+    app: kubercoin
+    component: node
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubercoin-api
+  namespace: kubercoin
+  labels:
+    app: kubercoin
+    component: node
+spec:
+  type: ClusterIP
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8634
+    protocol: TCP
+  - name: rpc
+    port: 8332
+    targetPort: 8634
+    protocol: TCP
+  selector:
+    app: kubercoin
+    component: node
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubercoin-metrics
+  namespace: kubercoin
+  labels:
+    app: kubercoin
+    component: node
+spec:
+  type: ClusterIP
+  ports:
+  - name: metrics
+    port: 9091
+    targetPort: 8634
+    protocol: TCP
+  selector:
+    app: kubercoin
+    component: node
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubercoin-ingress
+  namespace: kubercoin
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - kuber-coin.com
+    secretName: kubercoin-tls
+  rules:
+  - host: kuber-coin.com
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: kubercoin-api
+            port:
+              number: 8080
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: kubercoin-pdb
+  namespace: kubercoin
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      app: kubercoin
+      component: node
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: kubercoin-hpa
+  namespace: kubercoin
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kubercoin-node
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
