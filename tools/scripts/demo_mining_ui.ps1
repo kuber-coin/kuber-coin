@@ -2,8 +2,6 @@
 # KuberCoin Mining Dashboard Demo/Simulator
 # Simulates the native UI functionality without requiring full framework installation
 
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidAssignmentToAutomaticVariable', '', Justification='False positive: script no longer assigns to the automatic Error variable.')]
-
 param(
     [switch]$FullScreen = $false
 )

@@ -13,6 +13,8 @@ name: Fuzz
 
 env:
   CARGO_TERM_COLOR: always
+  # PR runs: 60 s (fast feedback).  Nightly / manual runs: 600 s (10 min).
+  MAX_FUZZ_TIME: ${{ github.event_name == 'pull_request' && '60' || '600' }}
 
 jobs:
   fuzz:
@@ -22,6 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         target:
+          # ── Existing targets ────────────────────────────────────────────
           - fuzz_transaction
           - fuzz_script
           - fuzz_block
@@ -29,13 +32,21 @@ jobs:
           - fuzz_psbt
           - fuzz_difficulty
           - fuzz_address
+          # ── New targets ─────────────────────────────────────────────────
+          - fuzz_psbt_deserialize
+          - fuzz_descriptor
+          - fuzz_rpc_json
+          - fuzz_stratum
+          - fuzz_utxo_decompress
+          - fuzz_bech32m
+          - fuzz_hd_wallet
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
 
-      - name: Cache Dependencies
+      - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: core/tests/fuzz
@@ -43,9 +54,27 @@ jobs:
       - name: Install cargo-fuzz
         run: cargo install cargo-fuzz --locked
 
-      - name: Run fuzzer (${{ matrix.target }}, 5 min)
-        run: cargo fuzz run ${{ matrix.target }} -- -max_total_time=300
+      - name: Restore fuzzing corpus
+        id: corpus-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: core/tests/fuzz/corpus/${{ matrix.target }}
+          key: fuzz-corpus-${{ matrix.target }}-${{ github.sha }}
+          restore-keys: |
+            fuzz-corpus-${{ matrix.target }}-
+
+      - name: Run fuzzer (${{ matrix.target }}, ${{ env.MAX_FUZZ_TIME }}s)
+        run: |
+          mkdir -p corpus/${{ matrix.target }}
+          cargo fuzz run ${{ matrix.target }} corpus/${{ matrix.target }} -- -max_total_time=${{ env.MAX_FUZZ_TIME }}
         working-directory: core/tests/fuzz
+
+      - name: Save fuzzing corpus
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: core/tests/fuzz/corpus/${{ matrix.target }}
+          key: fuzz-corpus-${{ matrix.target }}-${{ github.sha }}
 
       - name: Upload crash artifacts
         if: failure()

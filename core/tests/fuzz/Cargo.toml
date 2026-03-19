@@ -57,3 +57,45 @@ name = "fuzz_address"
 path = "fuzz_targets/fuzz_address.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "fuzz_psbt_deserialize"
+path = "fuzz_targets/fuzz_psbt_deserialize.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_descriptor"
+path = "fuzz_targets/fuzz_descriptor.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_rpc_json"
+path = "fuzz_targets/fuzz_rpc_json.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_stratum"
+path = "fuzz_targets/fuzz_stratum.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_utxo_decompress"
+path = "fuzz_targets/fuzz_utxo_decompress.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_bech32m"
+path = "fuzz_targets/fuzz_bech32m.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_hd_wallet"
+path = "fuzz_targets/fuzz_hd_wallet.rs"
+test = false
+doc = false

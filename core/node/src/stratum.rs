@@ -42,7 +42,7 @@ const JOB_REFRESH_INTERVAL: u64 = 30;
 // ── Wire types ──────────────────────────────────────────────────────────
 
 #[derive(Debug, Deserialize)]
-struct StratumRequest {
+pub(crate) struct StratumRequest {
     id: serde_json::Value,
     method: String,
     params: Vec<serde_json::Value>,

@@ -14,7 +14,8 @@ use axum::{
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use std::sync::Arc;
-use tower_http::cors::CorsLayer;
+use axum::http::{header, Method};
+use tower_http::cors::{Any, CorsLayer};
 
 use crate::mempool::Mempool;
 use crate::network::peer::{Direction, PeerManager};
@@ -290,7 +291,12 @@ pub fn create_router(state: Arc<AppState>) -> Router {
     Router::new()
         .merge(public)
         .merge(protected)
-        .layer(CorsLayer::permissive())
+        .layer(
+            CorsLayer::new()
+                .allow_origin(Any)
+                .allow_methods([Method::GET, Method::POST])
+                .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]),
+        )
         .with_state(state)
 }
 
@@ -838,7 +844,7 @@ async fn get_health(State(state): State<Arc<AppState>>) -> Json<HealthResponse> 
 // ── JSON-RPC (mining & query) ───────────────────────────────────
 
 #[derive(Deserialize)]
-struct JsonRpcRequest {
+pub(crate) struct JsonRpcRequest {
     #[allow(dead_code)]
     jsonrpc: Option<String>,
     method: String,
