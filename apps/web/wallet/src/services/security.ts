@@ -174,14 +174,37 @@ class SecurityService {
   }
 
   /**
-   * Hash password for storage
+   * Derive a PBKDF2 key from a password and a hex-encoded salt.
+   * Returns an encoded string: "pbkdf2:<saltHex>:<keyHex>".
+   * Using PBKDF2-SHA-256 with 200 000 iterations makes brute-force
+   * attacks ~200 000x harder than a bare SHA-256 hash, and the per-entry
+   * salt prevents pre-computed (rainbow-table) attacks.
    */
+  private async deriveKey(password: string, saltHex?: string): Promise<string> {
+    const salt = saltHex
+      ? Uint8Array.from(saltHex.match(/.{2}/g)!.map((b) => parseInt(b, 16)))
+      : globalThis.crypto.getRandomValues(new Uint8Array(16));
+
+    const keyMaterial = await globalThis.crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(password),
+      'PBKDF2',
+      false,
+      ['deriveBits']
+    );
+    const derived = await globalThis.crypto.subtle.deriveBits(
+      { name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 200_000 },
+      keyMaterial,
+      256
+    );
+    const toHex = (buf: ArrayBuffer) =>
+      Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    return `pbkdf2:${toHex(salt.buffer)}:${toHex(derived)}`;
+  }
+
+  /** @deprecated Use deriveKey internally; kept for any external callers. */
   async hashPassword(password: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return this.deriveKey(password);
   }
 
   /**
@@ -191,9 +214,9 @@ class SecurityService {
     if (typeof window === 'undefined') return;
 
     try {
-      const hashedPassword = await this.hashPassword(newPassword);
-      localStorage.setItem('kubercoin_password_hash', hashedPassword);
-      
+      const encoded = await this.deriveKey(newPassword);
+      localStorage.setItem('kubercoin_password_hash', encoded);
+
       const settings = this.getSettings();
       settings.passwordEnabled = true;
       this.saveSettings(settings);
@@ -203,17 +226,31 @@ class SecurityService {
   }
 
   /**
-   * Verify password
+   * Verify password against a stored PBKDF2-encoded string.
+   * Format: "pbkdf2:<saltHex>:<keyHex>"
    */
   async verifyPassword(password: string): Promise<boolean> {
     if (typeof window === 'undefined') return false;
 
     try {
-      const storedHash = localStorage.getItem('kubercoin_password_hash');
-      if (!storedHash) return false;
+      const stored = localStorage.getItem('kubercoin_password_hash');
+      if (!stored) return false;
 
-      const hashedPassword = await this.hashPassword(password);
-      return hashedPassword === storedHash;
+      if (!stored.startsWith('pbkdf2:')) {
+        // Stored value is a legacy bare SHA-256 hash; force the user to reset.
+        return false;
+      }
+      const [, saltHex, expectedKeyHex] = stored.split(':');
+      const candidate = await this.deriveKey(password, saltHex);
+      const [, , candidateKeyHex] = candidate.split(':');
+
+      // Timing-safe comparison: compare every char so we don't leak length info
+      if (candidateKeyHex.length !== expectedKeyHex.length) return false;
+      let diff = 0;
+      for (let i = 0; i < expectedKeyHex.length; i++) {
+        diff |= expectedKeyHex.charCodeAt(i) ^ candidateKeyHex.charCodeAt(i);
+      }
+      return diff === 0;
     } catch (error) {
       console.error('Password verification failed:', error);
       return false;

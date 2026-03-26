@@ -77,8 +77,17 @@ class MultiSigWalletService {
       throw new Error('At least 1 signature is required');
     }
 
+    // IMPORTANT: Multisig addresses must be derived from the co-signer public
+    // keys by the node (P2SH / P2WSH). A fabricated string from Math.random()
+    // is not callable on-chain — any funds sent there are permanently lost.
+    // TODO: call walletApi.post('/api/multisig/create', { name, requiredSignatures, coSigners })
+    //       and use the address the node returns.
+    throw new Error(
+      'Multisig wallet creation is not yet integrated with the blockchain node. ' +
+      'Please use the node CLI to create a multisig wallet.'
+    );
     const walletId = `msw_${Date.now()}`;
-    const address = 'KC1' + Math.random().toString(16).substring(2, 40) + '_msig';
+    const address = 'REPLACE_WITH_NODE_DERIVED_ADDRESS';
 
     const wallet: MultiSigWallet = {
       id: walletId,

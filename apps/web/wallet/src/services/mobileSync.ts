@@ -91,8 +91,16 @@ class MobileSyncService {
   }
 
   generatePairingCode(): string {
-    // Generate 6-digit pairing code
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    // Use a cryptographically secure RNG so pairing codes are not predictable.
+    // Range: 100000–999999 (guaranteed 6 digits).
+    const buf = new Uint32Array(1);
+    let code: number;
+    do {
+      globalThis.crypto.getRandomValues(buf);
+      // modulo range is 900000, bias < 1/(2^32/900000) ≈ 0.02% — negligible
+      code = (buf[0] % 900000) + 100000;
+    } while (code < 100000 || code > 999999);
+    return code.toString();
   }
 
   generateQRCode(pairingCode: string): string {

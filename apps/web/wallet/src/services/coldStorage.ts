@@ -59,19 +59,18 @@ class ColdStorageService {
     return [...this.coldWallets].sort((a, b) => b.createdAt - a.createdAt);
   }
 
-  async generateColdWallet(label: string): Promise<ColdWallet> {
-    // Cold wallets are generated locally (air-gapped / offline-first design).
-    // No API call needed — keys are created client-side for maximum security.
-    const wallet: ColdWallet = {
-      id: this.createId('cold'),
-      label,
-      address: this.createAddress('KC'),
-      publicKey: this.createAddress('PUB'),
-      createdAt: Date.now(),
-      balance: 0,
-    };
-    this.coldWallets = [wallet, ...this.coldWallets.filter((w) => w.id !== wallet.id)];
-    return wallet;
+  async generateColdWallet(_label: string): Promise<ColdWallet> {
+    // IMPORTANT: Do NOT generate wallet addresses from Math.random() or any
+    // non-cryptographic RNG. An address produced that way has no matching
+    // private key — any funds sent to it would be permanently unrecoverable.
+    // Cold wallet generation must go through the wallet backend so that a real
+    // key pair is derived and stored securely.
+    // TODO: implement by calling walletApi.post('/api/wallet/create', { name: _label })
+    //       once the cold-storage backend API is available.
+    throw new Error(
+      'Cold wallet generation is not yet available through this UI. ' +
+      'Create a wallet via the main wallet creation page and treat it as your cold-storage wallet.'
+    );
   }
 
   async refreshUnsignedTransactions(): Promise<UnsignedTransaction[]> {

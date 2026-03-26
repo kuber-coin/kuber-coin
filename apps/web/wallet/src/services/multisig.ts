@@ -84,10 +84,20 @@ class MultiSigService {
       throw new Error('Invalid signature requirement');
     }
 
+    // IMPORTANT: Multisig addresses must be derived from the combined public
+    // keys of all co-signers by the node (P2SH / P2WSH). A fabricated string
+    // from Math.random() is not a valid address — funds sent there are lost.
+    // TODO: call walletApi.post('/api/multisig/create', { label, requiredSignatures, coSigners })
+    //       and use the address returned by the node.
+    throw new Error(
+      'Multisig wallet creation is not yet integrated with the blockchain node. ' +
+      'Please use the node CLI to create a multisig wallet.'
+    );
+    /* remove the unreachable block below once the API is wired in
     const wallet: MultiSigWallet = {
       id: `multisig_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       label,
-      address: `KC1multisig${Math.random().toString(36).substr(2, 20)}`,
+      address: 'REPLACE_WITH_NODE_DERIVED_ADDRESS',
       requiredSignatures,
       totalSigners: coSigners.length,
       coSigners: coSigners.map((cs, i) => ({
@@ -102,6 +112,7 @@ class MultiSigService {
     this.wallets.set(wallet.id, wallet);
     this.saveWallets();
     return wallet;
+    */
   }
 
   getMultiSigWallets(): MultiSigWallet[] {

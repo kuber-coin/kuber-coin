@@ -32,13 +32,9 @@ struct Cli {
     #[arg(long, env = "KUBERCOIN_NETWORK")]
     network: Option<String>,
 
-    /// RPC listen address (e.g. 127.0.0.1:8332)
+    /// Combined REST + JSON-RPC listen address (e.g. 127.0.0.1:8634)
     #[arg(long, env = "KUBERCOIN_RPC_ADDR")]
     rpc_addr: Option<String>,
-
-    /// REST API listen address (e.g. 127.0.0.1:8080)
-    #[arg(long, env = "KUBERCOIN_REST_ADDR")]
-    rest_addr: Option<String>,
 
     /// P2P listen address (e.g. 0.0.0.0:8633)
     #[arg(long, env = "KUBERCOIN_P2P_ADDR")]
@@ -77,9 +73,6 @@ async fn main() -> Result<()> {
     }
     if let Some(addr) = cli.rpc_addr {
         config.rpc_addr = addr;
-    }
-    if let Some(addr) = cli.rest_addr {
-        config.rest_addr = addr;
     }
     if let Some(addr) = cli.p2p_addr {
         config.p2p_addr = addr;

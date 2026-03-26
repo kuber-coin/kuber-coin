@@ -225,10 +225,13 @@ export default function BackupPage() {
         </ul>
       </Card>
 
+      {/* TODO: fetch the decrypted mnemonic from an authenticated wallet-export
+           API call and pass it as `seedPhrase` so step 3 shows real content. */}
       {showWizard && (
         <BackupWizard
           onCompleteAction={handleCreateBackup}
           onCancelAction={() => setShowWizard(false)}
+          seedPhrase=""
         />
       )}
     </div>

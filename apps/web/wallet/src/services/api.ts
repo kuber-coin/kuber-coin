@@ -4,7 +4,12 @@
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_NODE_RPC_URL || 'http://localhost:8634';
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY || '';
+// Node API keys must never be stored in NEXT_PUBLIC_* variables — they would
+// be embedded in the client bundle and visible to anyone who downloads it.
+// Configure the node without api_keys for unauthenticated local use, or proxy
+// requests through the server-side Next.js API routes (app/api/) which read
+// KUBERCOIN_WALLET_API_KEY from the server environment.
+const API_KEY = '';
 
 interface RPCRequest {
   jsonrpc: string;
@@ -39,7 +44,6 @@ async function rpcCall<T>(method: string, params: any[] = []): Promise<T> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(API_KEY && { Authorization: `Bearer ${API_KEY}` }),
       },
       body: JSON.stringify(request),
     });

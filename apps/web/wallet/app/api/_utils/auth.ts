@@ -1,9 +1,7 @@
 export function getWalletAuthHeaders(): Record<string, string> {
-  const key =
-    process.env.KUBERCOIN_WALLET_API_KEY ||
-    process.env.NEXT_PUBLIC_WALLET_API_KEY ||
-    process.env.NEXT_PUBLIC_API_KEY ||
-    '';
+  // Only read server-side env vars. Never use NEXT_PUBLIC_* here — those are
+  // embedded into the browser bundle and would expose the node auth key.
+  const key = process.env.KUBERCOIN_WALLET_API_KEY || '';
 
   if (!key) {
     return {};

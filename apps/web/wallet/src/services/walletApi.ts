@@ -7,7 +7,11 @@ const API_BASE_URL =
   API_ENDPOINTS.walletApi ||
   'http://localhost:8080';
 
-const API_KEY = process.env.NEXT_PUBLIC_WALLET_API_KEY || '';
+// Never expose an API key via NEXT_PUBLIC_* — it would be embedded in the
+// client JS bundle. Calls that require auth should go through the server-side
+// Next.js API route proxy (app/api/), which reads KUBERCOIN_WALLET_API_KEY
+// from the server environment.
+const API_KEY = '';
 
 async function request<T = JsonValue>(
   path: string,

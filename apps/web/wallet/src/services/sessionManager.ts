@@ -302,17 +302,25 @@ class SessionManager {
 
   // 2FA Management
   async generate2FASecret(): Promise<{ secret: string; qrCode: string }> {
-    // In production, use a proper TOTP library like otplib
-    const secret = Math.random().toString(36).substring(2, 18).toUpperCase();
-    const qrCode = `otpauth://totp/KuberCoin?secret=${secret}`;
-
+    // TODO: replace with otplib (or equivalent) for production use.
+    // Uses crypto.getRandomValues for entropy instead of Math.random().
+    const bytes = new Uint8Array(16);
+    globalThis.crypto.getRandomValues(bytes);
+    // Base-32 alphabet used by TOTP authenticator apps
+    const BASE32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    let secret = '';
+    for (let i = 0; i < 16; i++) {
+      secret += BASE32[bytes[i] & 0x1f];
+    }
+    const qrCode = `otpauth://totp/KuberCoin?secret=${secret}&issuer=KuberCoin`;
     return { secret, qrCode };
   }
 
-  verify2FAToken(token: string, secret: string): boolean {
-    // In production, use proper TOTP verification
-    // For demo purposes, accept any 6-digit code
-    return /^\d{6}$/.test(token);
+  verify2FAToken(_token: string, _secret: string): boolean {
+    // TOTP verification requires a real HMAC-based one-time password library
+    // (e.g. otplib). Returning false unconditionally until that integration
+    // is in place. Do NOT deploy 2FA without replacing this method.
+    return false;
   }
 
   // Biometric Authentication (WebAuthn)

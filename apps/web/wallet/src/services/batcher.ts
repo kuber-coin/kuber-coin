@@ -73,10 +73,15 @@ class BatcherService {
     if (!batch) throw new Error('Batch not found');
     if (batch.executed) throw new Error('Batch already executed');
 
-    batch.executed = true;
-    batch.executedAt = Date.now();
-    batch.txid = `tx${Math.random().toString(36).substr(2, 16)}`;
-    this.saveBatches();
+    // Do NOT assign a fabricated txid or mark the batch as executed here.
+    // A fake txid silently misleads callers into thinking the transactions
+    // were broadcast when no network call has been made.
+    // TODO: implement by calling the node's sendrawtransaction RPC for each
+    //       output in this batch, then storing the real txid(s).
+    throw new Error(
+      'Batch execution is not yet integrated with the blockchain node. ' +
+      'Submit each transaction individually via the Send page.'
+    );
   }
 
   deleteBatch(id: string): void {

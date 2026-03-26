@@ -23,13 +23,11 @@ pub struct Config {
     #[serde(default)]
     pub network: Network,
     
-    /// RPC listen address
+    /// Combined REST + JSON-RPC listen address.
+    /// This single server handles both `/api/*` REST endpoints and the
+    /// JSON-RPC endpoint used by miners.
     #[serde(default = "default_rpc_addr")]
     pub rpc_addr: String,
-    
-    /// REST API listen address
-    #[serde(default = "default_rest_addr")]
-    pub rest_addr: String,
     
     /// P2P listen address
     #[serde(default = "default_p2p_addr")]
@@ -90,10 +88,6 @@ fn default_rpc_addr() -> String {
     "127.0.0.1:8634".to_string()
 }
 
-fn default_rest_addr() -> String {
-    "127.0.0.1:8080".to_string()
-}
-
 fn default_p2p_addr() -> String {
     "0.0.0.0:8633".to_string()
 }
@@ -136,7 +130,6 @@ impl Default for Config {
             data_dir: PathBuf::from("./data"),
             network: Network::default(),
             rpc_addr: default_rpc_addr(),
-            rest_addr: default_rest_addr(),
             p2p_addr: default_p2p_addr(),
             max_mempool_size: default_max_mempool(),
             max_block_cache: default_max_block_cache(),

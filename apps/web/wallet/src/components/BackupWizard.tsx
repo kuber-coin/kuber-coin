@@ -7,16 +7,18 @@ import { Button } from '@/components/Button';
 interface BackupWizardProps {
   onCompleteAction: (backupType: string, options: any) => void;
   onCancelAction: () => void;
+  /** The wallet's BIP-39 mnemonic to display in step 3. Must be supplied by
+   * the caller from an authenticated wallet-export API call; never hard-coded. */
+  seedPhrase: string;
 }
 
-export function BackupWizard({ onCompleteAction, onCancelAction }: BackupWizardProps) {
+export function BackupWizard({ onCompleteAction, onCancelAction, seedPhrase }: BackupWizardProps) {
   const [step, setStep] = useState(1);
   const [backupType, setBackupType] = useState<'shamir' | 'social' | 'cloud' | 'local'>('shamir');
   const [shamirShares, setShamirShares] = useState(5);
   const [shamirThreshold, setShamirThreshold] = useState(3);
   const [encryptionPassword, setEncryptionPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [seedPhrase] = useState('example seed phrase words for demonstration purposes only twelve words total here');
   const [verified, setVerified] = useState(false);
 
   const handleNext = () => {
@@ -248,7 +250,10 @@ export function BackupWizard({ onCompleteAction, onCancelAction }: BackupWizardP
                 </p>
 
                 <div className="bg-white rounded-lg p-4 font-mono text-sm border-2 border-gray-300">
-                  {seedPhrase}
+                  {seedPhrase
+                    ? seedPhrase
+                    : <span className="text-red-600">Seed phrase unavailable. Export your mnemonic from Wallet → Settings → Export Seed before starting this backup.</span>
+                  }
                 </div>
               </div>
 
