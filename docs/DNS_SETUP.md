@@ -76,8 +76,26 @@ dapp.kuber-coin.com.         CNAME kuber-coin.com.
 ### Docker Compose (Production)
 
 ```bash
-# 1. Copy and configure environment
-cp .env.production.example .env.production
+# 1. Create and configure environment
+cat > .env.production <<'EOF'
+MAIN_DOMAIN=kuber-coin.com
+WALLET_DOMAIN=wallet.kuber-coin.com
+EXPLORER_DOMAIN=explorer.kuber-coin.com
+NODE_DOMAIN=node.kuber-coin.com
+API_DOMAIN=api.kuber-coin.com
+WS_DOMAIN=ws.kuber-coin.com
+RPC_DOMAIN=rpc.kuber-coin.com
+DOCS_DOMAIN=docs.kuber-coin.com
+DAPP_DOMAIN=dapp.kuber-coin.com
+OPS_DOMAIN=ops.kuber-coin.com
+KUBERCOIN_ACME_EMAIL=replace-with-your-email@example.com
+KUBERCOIN_NETWORK=mainnet
+RPC_USER=kubercoin_rpc
+RPC_PASSWORD=replace-with-a-long-random-password
+KUBERCOIN_API_KEYS=replace-with-a-32-byte-random-api-key
+OPS_AUTH_USER=admin
+OPS_AUTH_HASH=replace-with-caddy-hash
+EOF
 
 # Edit .env.production with your values
 

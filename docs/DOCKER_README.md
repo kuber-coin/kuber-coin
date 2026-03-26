@@ -68,7 +68,16 @@ The default `docker-compose.yml` is optimized for local development and demos. F
 1) Create a production env file:
 
 ```bash
-cp .env.production.example .env.production
+cat > .env.production <<'EOF'
+KUBERCOIN_NETWORK=mainnet
+RPC_USER=change_me
+RPC_PASSWORD=change_me
+KUBERCOIN_API_KEYS=change_me
+MAIN_DOMAIN=kuber-coin.com
+WALLET_DOMAIN=wallet.kuber-coin.com
+EXPLORER_DOMAIN=explorer.kuber-coin.com
+OPS_DOMAIN=ops.kuber-coin.com
+EOF
 ```
 
 2) Start with the production override:
@@ -93,8 +102,26 @@ For an internet-facing deployment, run the optional edge proxy overlay. This exp
 1) Create env files:
 
 ```bash
-cp .env.production.example .env.production
-cp .env.edge.example .env.edge
+cat > .env.production <<'EOF'
+KUBERCOIN_NETWORK=mainnet
+RPC_USER=change_me
+RPC_PASSWORD=change_me
+KUBERCOIN_API_KEYS=change_me
+MAIN_DOMAIN=kuber-coin.com
+WALLET_DOMAIN=wallet.kuber-coin.com
+EXPLORER_DOMAIN=explorer.kuber-coin.com
+OPS_DOMAIN=ops.kuber-coin.com
+EOF
+
+cat > .env.edge <<'EOF'
+EXPLORER_DOMAIN=explorer.kuber-coin.com
+WALLET_DOMAIN=wallet.kuber-coin.com
+OPS_DOMAIN=ops.kuber-coin.com
+API_DOMAIN=api.kuber-coin.com
+WS_DOMAIN=ws.kuber-coin.com
+OPS_AUTH_USER=opsadmin
+OPS_AUTH_HASH=REPLACE_WITH_CADDY_HASH
+EOF
 ```
 
 2) Generate a password hash for ops basic auth (replace password):

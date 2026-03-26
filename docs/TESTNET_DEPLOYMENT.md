@@ -118,8 +118,14 @@ docker run -d --name kubercoin-testnet \
   kubercoin:latest
 ```
 
-> **Tip:** Copy `.env.testnet.example` to a local `.env.testnet` and pass `--env-file .env.testnet`
-> instead of repeating `-e` flags.
+> **Tip:** Create a local `.env.testnet` file and pass `--env-file .env.testnet`
+> instead of repeating `-e` flags, for example:
+>
+> ```text
+> KUBERCOIN_NETWORK=testnet
+> KUBERCOIN_API_AUTH_ENABLED=true
+> KUBERCOIN_TEST_MODE=1
+> ```
 
 ---
 
