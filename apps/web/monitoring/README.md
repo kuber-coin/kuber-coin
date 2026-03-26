@@ -14,9 +14,17 @@ Open: http://localhost:3100
 
 ## Configuration
 
-Copy `.env.example` to `.env.local` and adjust:
+Create `.env.local` and adjust:
 
-- `KUBERCOIN_RPC_URL` (default `http://localhost:8332`)
+```bash
+cat > .env.local <<'EOF'
+KUBERCOIN_RPC_URL=http://localhost:8634
+KUBERCOIN_PROMETHEUS_URL=http://localhost:9091/metrics
+NEXT_PUBLIC_REFRESH_MS=5000
+EOF
+```
+
+- `KUBERCOIN_RPC_URL` (default `http://localhost:8634`)
 - `KUBERCOIN_RPC_USER` / `KUBERCOIN_RPC_PASS` (optional)
 - `KUBERCOIN_PROMETHEUS_URL` (default `http://localhost:9091/metrics`)
 - `NEXT_PUBLIC_REFRESH_MS` (default `5000`)

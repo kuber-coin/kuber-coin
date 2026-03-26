@@ -16,8 +16,11 @@ Operations and monitoring dashboard for KuberCoin network.
 # Install dependencies
 npm install
 
-# Copy environment configuration
-cp .env.example .env
+# Create environment configuration
+cat > .env <<'EOF'
+KUBERCOIN_RPC_URL=http://localhost:8634
+KUBERCOIN_METRICS_URL=http://localhost:9091/metrics
+EOF
 
 # Start development server
 npm run dev
@@ -27,10 +30,10 @@ npm run dev
 
 ## Configuration
 
-Edit `.env`:
+Edit `.env` as needed:
 
 ```bash
-KUBERCOIN_RPC_URL=http://localhost:8332
+KUBERCOIN_RPC_URL=http://localhost:8634
 KUBERCOIN_METRICS_URL=http://localhost:9091/metrics
 ```
 

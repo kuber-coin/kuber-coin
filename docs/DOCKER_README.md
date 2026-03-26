@@ -13,10 +13,15 @@ This guide explains how to run Kubercoin using Docker and Docker Compose for eas
 
 ### 1. Environment Setup
 
-Copy the example environment file and customize it:
+Create a local environment file and customize it:
 
 ```bash
-cp .env.example .env
+cat > .env <<'EOF'
+KUBERCOIN_NETWORK=mainnet
+RPC_USER=change_me
+RPC_PASSWORD=change_me
+KUBERCOIN_API_KEYS=change_me
+EOF
 nano .env  # Edit with your secure passwords
 ```
 

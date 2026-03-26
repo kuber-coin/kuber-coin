@@ -104,8 +104,12 @@ cd wallet-web
 npm install
 
 # Set up environment
-cp .env.example .env.local
-# Edit .env.local with your configuration
+cat > .env.local <<'EOF'
+KUBERCOIN_WALLET_API_URL=http://localhost:8634
+KUBERCOIN_WALLET_API_KEY=replace_me_if_auth_is_enabled
+NEXT_PUBLIC_EXPLORER_URL=http://localhost:3200
+NEXT_PUBLIC_NETWORK=mainnet
+EOF
 
 # Run development server
 npm run dev
@@ -118,9 +122,9 @@ npm run dev
 
 ```env
 # .env.local
-NEXT_PUBLIC_NODE_URL=http://localhost:8332
+KUBERCOIN_WALLET_API_URL=http://localhost:8634
+KUBERCOIN_WALLET_API_KEY=replace_me_if_auth_is_enabled
 NEXT_PUBLIC_EXPLORER_URL=http://localhost:3200
-NEXT_PUBLIC_API_KEY=your_api_key_here
 NEXT_PUBLIC_NETWORK=mainnet
 ```
 

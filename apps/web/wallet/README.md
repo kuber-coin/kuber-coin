@@ -15,8 +15,12 @@ Web-based wallet management UI for KuberCoin.
 # Install dependencies
 npm install
 
-# Copy environment configuration
-cp .env.example .env
+# Create environment configuration
+cat > .env.local <<'EOF'
+KUBERCOIN_WALLET_API_URL=http://localhost:8634
+# Optional: set only when the wallet API requires bearer auth
+# KUBERCOIN_WALLET_API_KEY=replace_me
+EOF
 
 # Start development server
 npm run dev
@@ -26,10 +30,12 @@ npm run dev
 
 ## Configuration
 
-Edit `.env`:
+Edit `.env.local`:
 
 ```bash
-KUBERCOIN_WALLET_API_URL=http://localhost:8080
+KUBERCOIN_WALLET_API_URL=http://localhost:8634
+# Optional: set only when the wallet API requires bearer auth
+# KUBERCOIN_WALLET_API_KEY=replace_me
 ```
 
 ## Creating Wallets

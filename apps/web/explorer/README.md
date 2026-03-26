@@ -16,8 +16,12 @@ Blockchain explorer UI for KuberCoin network with real-time WebSocket updates.
 # Install dependencies
 npm install
 
-# Copy environment configuration
-cp .env.example .env
+# Create environment configuration
+cat > .env <<'EOF'
+KUBERCOIN_RPC_URL=http://localhost:8634
+# Optional: only set this when a compatible websocket endpoint is running
+# KUBERCOIN_WS_URL=ws://localhost:9090/ws
+EOF
 
 # Start development server
 npm run dev
@@ -27,7 +31,7 @@ npm run dev
 
 ## Configuration
 
-Edit `.env`:
+Edit `.env` as needed:
 
 ```bash
 KUBERCOIN_RPC_URL=http://localhost:8080
