@@ -27,7 +27,7 @@ license = "MIT"
 repository = "https://github.com/kubercoin/kubercoin"
 homepage = "https://kuber-coin.com"
 description = "A Bitcoin-inspired cryptocurrency with SHA-256d PoW, UTXO model, and 21M supply cap"
-rust-version = "1.75"
+rust-version = "1.88"
 keywords = ["blockchain", "cryptocurrency", "bitcoin", "proof-of-work", "utxo"]
 categories = ["cryptography::cryptocurrencies"]
 

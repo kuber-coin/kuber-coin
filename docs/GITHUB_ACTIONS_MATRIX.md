@@ -10,9 +10,9 @@ Source: [.github/workflows/ci.yml](.github/workflows/ci.yml)
 
 | Workflow Job | Purpose | Local Task | Script / Command | Status |
 |---|---|---|---|---|
-| `check` | fmt + clippy | `gha-local-fast` | `cargo fmt --all -- --check` and `cargo clippy --workspace --all-targets -- -D warnings` | mirrored |
+| `check` | hygiene + fmt + clippy | `gha-local-fast` / `ci-git-hygiene` | [tools/scripts/ci_git_hygiene.ps1](tools/scripts/ci_git_hygiene.ps1), `cargo fmt --all -- --check`, `cargo clippy --workspace --all-targets -- -D warnings` | mirrored |
 | `deny` | cargo-deny | `ci-security` | [tools/scripts/ci_security.ps1](tools/scripts/ci_security.ps1) | mirrored |
-| `msrv` | Rust 1.75 workspace check | `ci-msrv` | [tools/scripts/ci_msrv.ps1](tools/scripts/ci_msrv.ps1) | mirrored |
+| `msrv` | Rust 1.88 workspace check | `ci-msrv` | [tools/scripts/ci_msrv.ps1](tools/scripts/ci_msrv.ps1) | mirrored |
 | `doc` | rustdoc with warnings denied | `ci-doc` | [tools/scripts/ci_doc.ps1](tools/scripts/ci_doc.ps1) | mirrored |
 | `test` | workspace build + test | `gha-local-fast` | [tools/scripts/github_actions_local.ps1](tools/scripts/github_actions_local.ps1) | mirrored |
 | `convergence` | multi-node convergence | `ci-convergence` | [tools/scripts/ci_convergence.ps1](tools/scripts/ci_convergence.ps1) | mirrored |

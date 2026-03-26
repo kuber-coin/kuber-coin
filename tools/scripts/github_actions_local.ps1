@@ -36,6 +36,10 @@ function Invoke-Step([string]$Name, [scriptblock]$Step) {
 
 Push-Location $RepoRoot
 try {
+  Invoke-Step 'Repo hygiene' {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'ci_git_hygiene.ps1')
+  }
+
   Invoke-Step 'Formatting' {
     & $Cargo fmt --all -- --check
   }

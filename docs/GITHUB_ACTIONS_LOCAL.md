@@ -24,6 +24,7 @@ Broader practical pass:
 
 Focused workflow mirrors:
 
+- `ci-git-hygiene`
 - `ci-msrv`
 - `ci-doc`
 - `ci-sdk-js`
@@ -42,6 +43,7 @@ Focused workflow mirrors:
 ## Script Entry Points
 
 - [tools/scripts/github_actions_local.ps1](tools/scripts/github_actions_local.ps1) — umbrella local CI mirror
+- [tools/scripts/ci_git_hygiene.ps1](tools/scripts/ci_git_hygiene.ps1) — tracked-file hygiene guard for secrets and generated artifacts
 - [tools/scripts/ci_msrv.ps1](tools/scripts/ci_msrv.ps1) — `ci.yml` MSRV job
 - [tools/scripts/ci_doc.ps1](tools/scripts/ci_doc.ps1) — `ci.yml` rustdoc job
 - [tools/scripts/ci_sdk_js.ps1](tools/scripts/ci_sdk_js.ps1) — `ci.yml` JS SDK job
@@ -60,6 +62,7 @@ Focused workflow mirrors:
 
 Windows-native or general local checks:
 
+- tracked-file hygiene
 - formatting
 - clippy
 - workspace tests

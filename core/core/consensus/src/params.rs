@@ -7,16 +7,16 @@
 //!
 //! | Name | Value | Description |
 //! |------|-------|-------------|
-//! | [`MAX_SUPPLY`] | 2,100,000,000,000,000 sat | 21 million KUBER |
-//! | [`INITIAL_BLOCK_REWARD`] | 5,000,000,000 sat | 50 KUBER |
-//! | [`HALVING_INTERVAL`] | 210,000 blocks | ~4 years at 10-min blocks |
-//! | [`COINBASE_MATURITY`] | 100 blocks | ~16.7 hours |
-//! | [`DIFFICULTY_ADJUSTMENT_INTERVAL`] | 2,016 blocks | ~2 weeks |
-//! | [`TARGET_BLOCK_TIME_SECS`] | 600 s | 10 minutes |
-//! | [`MAX_BLOCK_WEIGHT`] | 4,000,000 WU | 4 MW (SegWit weight) |
-//! | [`MAX_BLOCK_SIZE`] | 1,000,000 bytes | 1 MB legacy fallback |
-//! | [`MAX_DIFFICULTY_ADJUSTMENT_FACTOR`] | 4 | Clamp: [1/4, 4] |
-//! | [`MAX_FUTURE_BLOCK_TIME_SECS`] | 7,200 s | 2 hours |
+//! | [`crate::params::MAX_SUPPLY`] | 2,100,000,000,000,000 sat | 21 million KUBER |
+//! | [`crate::params::INITIAL_BLOCK_REWARD`] | 5,000,000,000 sat | 50 KUBER |
+//! | [`crate::params::HALVING_INTERVAL`] | 210,000 blocks | ~4 years at 10-min blocks |
+//! | [`crate::params::COINBASE_MATURITY`] | 100 blocks | ~16.7 hours |
+//! | [`crate::params::DIFFICULTY_ADJUSTMENT_INTERVAL`] | 2,016 blocks | ~2 weeks |
+//! | [`crate::params::TARGET_BLOCK_TIME_SECS`] | 600 s | 10 minutes |
+//! | [`crate::params::MAX_BLOCK_WEIGHT`] | 4,000,000 WU | 4 MW (SegWit weight) |
+//! | [`crate::params::MAX_BLOCK_SIZE`] | 1,000,000 bytes | 1 MB legacy fallback |
+//! | [`crate::params::MAX_DIFFICULTY_ADJUSTMENT_FACTOR`] | 4 | Clamp: [1/4, 4] |
+//! | [`crate::params::MAX_FUTURE_BLOCK_TIME_SECS`] | 7,200 s | 2 hours |
 
 // ── Supply ───────────────────────────────────────────────────
 

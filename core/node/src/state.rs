@@ -1264,7 +1264,7 @@ impl NodeState {
     /// - 8-byte little-endian height
     /// - 32-byte UTXO commitment hash
     ///
-    /// A receiving node can load this with [`load_utxo_snapshot`] to skip IBD
+    /// A receiving node can load this with [`Self::load_utxo_snapshot`] to skip IBD
     /// up to the snapshot height (assumeUTXO / BIP-???).
     pub fn dump_utxo_snapshot(&self) -> Result<Vec<u8>> {
         let tip = self.get_tip();
@@ -1283,7 +1283,7 @@ impl NodeState {
         Ok(snapshot)
     }
 
-    /// Load a UTXO snapshot produced by [`dump_utxo_snapshot`].
+    /// Load a UTXO snapshot produced by [`Self::dump_utxo_snapshot`].
     ///
     /// Validates the commitment hash, then overwrites the UTXO set, tip,
     /// and height.  Background validation of the full chain from genesis to

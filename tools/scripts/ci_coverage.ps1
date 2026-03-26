@@ -13,6 +13,40 @@ $ErrorActionPreference = 'Stop'
 $RepoRoot = Resolve-WorkspaceRoot -WorkspaceRoot (Split-Path -Parent $PSScriptRoot)
 $Cargo = Resolve-Cargo
 
+if ([string]::IsNullOrWhiteSpace($env:CARGO_LLVM_COV_TARGET_DIR)) {
+  $env:CARGO_LLVM_COV_TARGET_DIR = Join-Path $RepoRoot ("target\llvm-cov-" + [Guid]::NewGuid().ToString('N'))
+}
+
+$CoverageTargetDir = $env:CARGO_LLVM_COV_TARGET_DIR
+
+function Invoke-CoverageClean {
+  $attempts = 0
+  while ($attempts -lt 3) {
+    $attempts++
+
+    Stop-KubercoinProcesses | Out-Null
+    & $Cargo llvm-cov clean --workspace
+    if ($LASTEXITCODE -eq 0) {
+      return
+    }
+
+    Start-Sleep -Seconds $attempts
+  }
+
+  if (Test-Path $CoverageTargetDir) {
+    Stop-KubercoinProcesses | Out-Null
+    Start-Sleep -Seconds 2
+    try {
+      Remove-Item $CoverageTargetDir -Recurse -Force -ErrorAction Stop
+      return
+    } catch {
+      throw "cargo llvm-cov clean failed and fallback removal of $CoverageTargetDir also failed: $($_.Exception.Message)"
+    }
+  }
+
+  throw 'cargo llvm-cov clean failed'
+}
+
 function Ensure-Tooling {
   if ($SkipInstall) {
     return
@@ -45,10 +79,7 @@ Ensure-Tooling
 Push-Location $RepoRoot
 try {
   if (-not $NoClean) {
-    & $Cargo llvm-cov clean --workspace
-    if ($LASTEXITCODE -ne 0) {
-      throw 'cargo llvm-cov clean failed'
-    }
+    Invoke-CoverageClean
   }
 
   if (-not $SummaryOnly -and -not $HtmlOnly) {

@@ -1,0 +1,1004 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "fuzz-check-all",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"check",
+				"--manifest-path",
+				"core/tests/fuzz/Cargo.toml",
+				"--bins"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "fuzz-local-sweep",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\fuzz_smoke_all.ps1",
+				"-Runs",
+				"1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "fuzz-wsl-sweep",
+			"type": "shell",
+			"command": "wsl.exe",
+			"args": [
+				"bash",
+				"-lc",
+				"cd \"$(wslpath '${workspaceFolder}')\" && bash tools/scripts/fuzz_smoke_all.sh"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "fuzz-check-target",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"check",
+				"--manifest-path",
+				"core/tests/fuzz/Cargo.toml",
+				"--bin",
+				"${input:fuzzTarget}"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "fuzz-wsl-target",
+			"type": "shell",
+			"command": "wsl.exe",
+			"args": [
+				"bash",
+				"-lc",
+				"cd \"$(wslpath '${workspaceFolder}')\" && RUNS='${input:fuzzRuns}' bash tools/scripts/fuzz_smoke_all.sh ${input:fuzzTarget}"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-git-hygiene",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_git_hygiene.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-msrv",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_msrv.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-doc",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_doc.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-sdk-js",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_sdk_js.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-security",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_security.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-convergence",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_convergence.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-coverage",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_coverage.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-native-ui-windows",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_native_ui_windows.ps1"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "ci-native-ui-linux-wsl",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_native_ui_linux_wsl.ps1"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "gha-local-native-ui",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\ci_native_ui_all.ps1"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "gha-local-full",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\github_actions_local.ps1",
+				"-IncludeCoverage",
+				"-IncludeWslFuzz"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "gha-local-fast",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\github_actions_local.ps1",
+				"-Fast"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "gha-local-practical",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\github_actions_local.ps1"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "gha-local-practical+coverage",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\github_actions_local.ps1",
+				"-IncludeCoverage"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "wallet-web-dev",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/apps/web/wallet"
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "wallet-web-build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/apps/web/wallet"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "wallet-web-e2e",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:e2e"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/apps/web/wallet"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "wallet-web-e2e-ui",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:e2e:ui"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/apps/web/wallet"
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "wallet-web-e2e-report",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:e2e:report"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/apps/web/wallet"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "wallet-web-e2e-live",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:e2e:live"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/apps/web/wallet",
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_API_KEY": "public_test_key_not_a_secret"
+				}
+			},
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "e2e-smoke",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_smoke.ps1"
+			],
+			"isBackground": false,
+			"presentation": {
+				"reveal": "always",
+				"panel": "new",
+				"clear": true
+			},
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "wallet-demo",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\wallet_demo.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "wallet-multi-demo",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\wallet_multi_demo.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "e2e-extended",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_extended.ps1"
+			],
+			"isBackground": false,
+			"presentation": {
+				"reveal": "always",
+				"panel": "new",
+				"clear": true
+			},
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "e2e-ci",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_extended.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "cli-json-smoke",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\cli_json_smoke.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "test-complete",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"test-complete.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "node-build-release",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\node_build_release.ps1",
+				"-StopRunningNode"
+			],
+			"isBackground": false,
+			"presentation": {
+				"reveal": "always",
+				"panel": "new",
+				"clear": true
+			},
+			"problemMatcher": [],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "node-run-no-p2p (local ports)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"& .\\target\\release\\kubercoin.exe node --no-p2p"
+			],
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "kubercoin-node",
+				"pattern": {
+					"regexp": "^\\s*(ERROR|Error|error):\\s+(.*)$",
+					"severity": 1,
+					"message": 2
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "KuberCoin Network Node",
+					"endsPattern": "✓ HTTP API started"
+				}
+			},
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"KUBERCOIN_HTTP_PORT": "18080",
+					"KUBERCOIN_WS_PORT": "19090",
+					"KUBERCOIN_API_AUTH_ENABLED": "false",
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "node-stop",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\node_stop.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "wallet-web-dev",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}\\apps\\web\\wallet",
+				"env": {
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "wallet-web-build",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}\\apps\\web\\wallet",
+				"env": {
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "wallet-web-e2e",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:e2e"
+			],
+			"isBackground": false,
+			"presentation": {
+				"reveal": "always",
+				"panel": "new",
+				"clear": true
+			},
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}\\apps\\web\\wallet",
+				"env": {
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "wallet-web-e2e-ui",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"test:e2e:ui"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}\\apps\\web\\wallet",
+				"env": {
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "wallet-web-e2e-report",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"playwright",
+				"show-report"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}\\apps\\web\\wallet",
+				"env": {
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "e2e-full (node + scripts + wallet-web)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_full.ps1"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new",
+				"clear": true
+			},
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1",
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "e2e-full-stress",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_full_stress.ps1"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "new",
+				"clear": true
+			},
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1",
+					"NEXT_TELEMETRY_DISABLED": "1"
+				}
+			}
+		},
+		{
+			"label": "kubercoin-compose-up",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"up",
+				"-d",
+				"--build"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "kubercoin-compose-down",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"down"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "kubercoin-compose-logs-node",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"logs",
+				"-f",
+				"node"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "kubercoin-compose-up-monitoring",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"up",
+				"-d",
+				"prometheus",
+				"grafana"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "kubercoin-compose-logs-prometheus",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"logs",
+				"-f",
+				"prometheus"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "kubercoin-compose-logs-grafana",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"logs",
+				"-f",
+				"grafana"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "e2e-live",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_live.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "e2e-live-strict",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\e2e_live.ps1",
+				"-StrictMonitoring",
+				"-TimeoutSec",
+				"20"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "all-sweep (build + cli + e2e + live + complete)",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"tools\\scripts\\all_sweep.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"KUBERCOIN_API_KEYS": "public_test_key_not_a_secret",
+					"KUBERCOIN_TEST_MODE": "1"
+				}
+			}
+		},
+		{
+			"label": "verify-wallet1-balance",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"& .\\target\\release\\kubercoin.exe get-balance wallet1.json --json"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-wallet2-balance",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"& .\\target\\release\\kubercoin.exe get-balance wallet2.json --json"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-wallet2-address",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"& .\\target\\release\\kubercoin.exe get-address wallet2.json --json"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "option2-isolated-send",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"$ErrorActionPreference='Stop'; $env:KUBERCOIN_CHAIN_STATE_PATH='C:\\kubercoin\\reports\\option2_chainstate.bin'; $exe=(Resolve-Path '.\\target\\release\\kubercoin.exe').Path; $sender='reports\\option2_sender_wallet.json'; $recipient='reports\\option2_recipient_wallet.json'; if(Test-Path $env:KUBERCOIN_CHAIN_STATE_PATH){Remove-Item $env:KUBERCOIN_CHAIN_STATE_PATH -Force}; if(Test-Path $sender){Remove-Item $sender -Force}; if(Test-Path $recipient){Remove-Item $recipient -Force}; $senderInfo=& $exe new-wallet $sender --json | ConvertFrom-Json; $senderAddr=$senderInfo.address; & $exe mine-to $senderAddr 101 --json | Out-Null; $senderBal=& $exe get-balance $sender --json | ConvertFrom-Json; $recipientInfo=& $exe new-wallet $recipient --json | ConvertFrom-Json; $recipientAddr=$recipientInfo.address; $send=& $exe send $sender $recipientAddr 1000000 --json | ConvertFrom-Json; $recipientBal=& $exe get-balance $recipient --json | ConvertFrom-Json; [pscustomobject]@{ statePath=$env:KUBERCOIN_CHAIN_STATE_PATH; senderWallet=$sender; senderAddress=$senderAddr; senderSpendable=$senderBal.spendable; recipientWallet=$recipient; recipientAddress=$recipientAddr; sendOk=$send.ok; sendError=$send.error; txid=$send.txid; confirmedInHeight=$send.height; blockHash=$send.block_hash; amount=$send.amount; fee=$send.fee; recipientTotal=$recipientBal.total; recipientSpendable=$recipientBal.spendable; recipientImmature=$recipientBal.immature } | ConvertTo-Json -Compress"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "wallet-web-dev-temp",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"--prefix",
+				"c:\\kubercoin\\apps\\web\\wallet",
+				"run",
+				"dev"
+			],
+			"isBackground": true,
+			"group": "test"
+		},
+		{
+			"label": "wallet-web-e2e-live",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"$env:KUBERCOIN_API_KEYS='public_test_key_not_a_secret'; $env:KUBERCOIN_TEST_API_KEY='public_test_key_not_a_secret'; npm --prefix apps/web/wallet run test:e2e:live"
+			],
+			"isBackground": false,
+			"group": "test"
+		}
+	],
+	"inputs": [
+		{
+			"id": "fuzzTarget",
+			"type": "pickString",
+			"description": "Select a fuzz target",
+			"options": [
+				"fuzz_psbt",
+				"fuzz_block",
+				"fuzz_script",
+				"fuzz_difficulty",
+				"fuzz_address",
+				"fuzz_p2p_message",
+				"fuzz_transaction",
+				"fuzz_psbt_deserialize",
+				"fuzz_bech32m",
+				"fuzz_utxo_decompress",
+				"fuzz_descriptor",
+				"fuzz_rpc_json",
+				"fuzz_hd_wallet",
+				"fuzz_stratum"
+			],
+			"default": "fuzz_address"
+		},
+		{
+			"id": "fuzzRuns",
+			"type": "promptString",
+			"description": "libFuzzer -runs value for WSL target runs",
+			"default": "1"
+		}
+	]
+}

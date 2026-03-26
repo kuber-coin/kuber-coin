@@ -1,5 +1,5 @@
 param(
-  [string]$Toolchain = '1.75',
+  [string]$Toolchain = '1.88.0',
   [switch]$SkipInstall
 )
 

@@ -42,7 +42,7 @@ cd kubercoin
 cargo build --release --bin kubercoin-node
 ```
 
-Requires Rust 1.75+ and a C linker.
+Requires Rust 1.88+ and a C linker.
 
 ### Run a Node
 

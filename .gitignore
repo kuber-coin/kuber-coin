@@ -1,10 +1,11 @@
 # Rust
 /target/
+**/target/
 **/*.rs.bk
 *.pdb
 
 # IDE
-.vscode/
+.vscode/*
 !.vscode/tasks.json
 !.vscode/launch.json
 .vs/
@@ -20,10 +21,8 @@ desktop.ini
 
 # Local env files
 .env
-.env.local
-.env.*.local
-.env.production
-.env.testnet
+.env.*
+!.env*.example
 
 # Node.js
 node_modules/
@@ -37,6 +36,7 @@ test-results/
 playwright-report/
 playwright-report-live/
 coverage/
+reports/
 *.lcov
 *.profraw
 *.profdata

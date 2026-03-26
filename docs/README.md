@@ -16,7 +16,7 @@
 Evidence-backed technical documentation for the current KuberCoin codebase, testnet, and operator workflows.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
+[![Rust](https://img.shields.io/badge/rust-1.88%2B-orange.svg)](https://www.rust-lang.org/)
 [![Tests](https://img.shields.io/badge/tests-1334%20passing-brightgreen.svg)](https://github.com/kubercoin/kubercoin)
 [![Version](https://img.shields.io/badge/version-1.0.19-blue.svg)](https://github.com/kubercoin/kubercoin/releases)
 [![Status](https://img.shields.io/badge/status-testnet-yellow.svg)](https://github.com/kubercoin/kubercoin)
