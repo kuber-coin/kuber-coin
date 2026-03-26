@@ -1,7 +1,9 @@
 #!/bin/bash
-# cloud-init-monitoring.sh — Startup script for KuberCoin seed2
+# cloud-init-monitoring.sh — Example startup script for KuberCoin seed2
 # (P2P seed node + Prometheus + Grafana, West Europe)
 # This file is base64-encoded and passed as VM customData via Bicep.
+#
+# This script is an example testnet bootstrap, not a production-hardened setup.
 
 set -euo pipefail
 
@@ -42,7 +44,7 @@ mkdir -p /etc/kubercoin/prometheus
 
 # ── Clone repo and build Docker image ────────────────────────────────────────
 apt-get install -y --no-install-recommends git
-git clone --depth 1 https://github.com/your-org/kubercoin.git /opt/kubercoin/src 2>/dev/null || true
+git clone --depth 1 https://github.com/kuber-coin/kuber-coin.git /opt/kubercoin/src 2>/dev/null || true
 cd /opt/kubercoin/src && docker build -f Dockerfile.simple -t kubercoin-node:testnet . || true
 
 # ── Prometheus configuration ──────────────────────────────────────────────────
@@ -88,7 +90,6 @@ services:
       KUBERCOIN_P2P_ADDR: "0.0.0.0:18633"
       KUBERCOIN_RPC_ADDR: "0.0.0.0:8332"
       KUBERCOIN_API_AUTH_ENABLED: "false"
-      KUBERCOIN_ALLOW_INSECURE_NO_AUTH: "true"
       # connect seed2 to the example primary seed placeholder
       KUBERCOIN_INITIAL_PEERS: "192.0.2.10:18633"
     healthcheck:

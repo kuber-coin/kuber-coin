@@ -1,5 +1,6 @@
 #!/bin/bash
-# fix_seed1.sh — Run on seed1 to repair the Docker Compose setup
+# fix_seed1.sh — Example operator repair script for seed1.
+# Review before use in a public deployment.
 set -euo pipefail
 
 echo "=== Stopping broken service ==="
@@ -27,7 +28,6 @@ services:
       KUBERCOIN_P2P_ADDR: "0.0.0.0:18633"
       KUBERCOIN_RPC_ADDR: "0.0.0.0:8332"
       KUBERCOIN_API_AUTH_ENABLED: "false"
-      KUBERCOIN_ALLOW_INSECURE_NO_AUTH: "true"
       KUBERCOIN_INITIAL_PEERS: "198.51.100.20:18633"
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8332/api/health || exit 1"]
@@ -44,7 +44,7 @@ echo "=== Cloning repo and building image ==="
 apt-get install -y --no-install-recommends git 2>/dev/null || true
 if [ ! -d /opt/kubercoin/src/.git ]; then
   rm -rf /opt/kubercoin/src
-  git clone --depth 1 https://github.com/kubercoin-project/kubercoin.git /opt/kubercoin/src
+  git clone --depth 1 https://github.com/kuber-coin/kuber-coin.git /opt/kubercoin/src
 fi
 
 echo "=== Building Docker image (takes 5-10 min) ==="

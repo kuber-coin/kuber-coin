@@ -153,9 +153,10 @@ restore_wallet() {
     echo "Restoring wallet..."
     
     if [ -f "$BACKUP_DIR/$BACKUP_NAME/wallet.dat.enc" ]; then
+        : "${WALLET_BACKUP_PASSWORD:?Set WALLET_BACKUP_PASSWORD before decrypting wallet backups}"
         openssl enc -aes-256-cbc -d -in "$BACKUP_DIR/$BACKUP_NAME/wallet.dat.enc" \
             -out "$DATA_DIR/wallet.dat" \
-            -pass pass:${WALLET_BACKUP_PASSWORD:-changeme}
+            -pass pass:${WALLET_BACKUP_PASSWORD}
         echo "✓ Wallet restored (decrypted)"
     else
         echo "⚠ No wallet backup found"

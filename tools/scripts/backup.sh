@@ -75,10 +75,11 @@ backup_wallet() {
     echo "Backing up wallet..."
     
     if [ -f "$DATA_DIR/wallet.dat" ]; then
+        : "${WALLET_BACKUP_PASSWORD:?Set WALLET_BACKUP_PASSWORD before encrypting wallet backups}"
         # Encrypt wallet backup
         openssl enc -aes-256-cbc -salt -in "$DATA_DIR/wallet.dat" \
             -out "$BACKUP_DIR/$BACKUP_NAME/wallet.dat.enc" \
-            -pass pass:${WALLET_BACKUP_PASSWORD:-changeme}
+            -pass pass:${WALLET_BACKUP_PASSWORD}
         echo "✓ Wallet backed up (encrypted)"
     else
         echo "⚠ No wallet found"

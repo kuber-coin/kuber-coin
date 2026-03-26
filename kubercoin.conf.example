@@ -1,42 +1,71 @@
 # KuberCoin Node Configuration
 # Copy this file to kubercoin.conf and adjust as needed.
-# Environment variables override config file values.
+# Environment variables (KUBERCOIN_<FIELD>) override file values.
+
+# -----------------------------------------------------------------
+# Core
+# -----------------------------------------------------------------
 
 # Network mode: mainnet | testnet | regtest
 network = mainnet
 
-# P2P port (default: 8633 mainnet, 18633 testnet, 18744 regtest)
-# port = 8633
-
-# Disable P2P networking (solo/testing mode)
-# no_p2p = false
-
-# Data directory for chain state
+# Directory where chain state, UTXO DB, and wallet files are stored.
 # data_dir = /data/kubercoin
 
-# HTTP REST API port (auto-selected 8080-8095 if unset)
-# http_port = 8080
+# -----------------------------------------------------------------
+# RPC / REST API  (single Axum HTTP server)
+# -----------------------------------------------------------------
 
-# WebSocket notification port (auto-selected 9090-9099 if unset)
-# ws_port = 9090
+# Address:port for the combined REST + JSON-RPC server.
+# Corresponds to $KUBERCOIN_RPC_ADDR.
+# rpc_addr = 127.0.0.1:8634
 
-# Comma-separated API keys for RPC authentication
-# api_keys = key1,key2
+# Comma-separated bearer tokens required in Authorization: Bearer <key>.
+# Leave unset to allow unauthenticated access (not recommended in production).
+# api_keys = replace-with-strong-api-key-1,replace-with-strong-api-key-2
 
-# Rate limit: max RPC calls per minute per client
-# rate_limit_per_min = 60
+# -----------------------------------------------------------------
+# P2P Networking
+# -----------------------------------------------------------------
 
-# Maximum number of peer connections
-# max_peers = 125
+# Address:port that the P2P listener binds to.
+# p2p_addr = 0.0.0.0:8633
 
-# DNS seed nodes (comma-separated; defaults per network)
-# seeds = seed1.kuber-coin.com,seed2.kuber-coin.com
+# Route all outbound P2P connections through this SOCKS5 proxy (e.g. Tor).
+# proxy_addr = 127.0.0.1:9050
 
-# Logging level: error | warn | info | debug | trace
-# log_level = info
+# Only connect to .onion peers (requires proxy_addr to be set).
+# tor_only = false
 
-# Enable Prometheus metrics endpoint (port 9091)
-# metrics = true
+# Accept inbound connections from .onion peers.
+# allow_onion = false
 
-# Test mode (relaxed rate limits, bootstrap wallets)
-# test_mode = false
+# Use UPnP to map the P2P port on a home router/NAT.
+# upnp = false
+
+# -----------------------------------------------------------------
+# Mempool & Chain
+# -----------------------------------------------------------------
+
+# Maximum mempool size in bytes (default: 300 MiB).
+# max_mempool_size = 314572800
+
+# Maximum number of full blocks held in the in-memory block cache.
+# max_block_cache = 64
+
+# Prune chain state older than this many blocks (0 = full archive node).
+# prune_depth = 0
+
+# -----------------------------------------------------------------
+# Mining (Stratum v1)
+# -----------------------------------------------------------------
+
+# Address:port for the Stratum v1 mining server. Leave unset to disable.
+# stratum_addr = 0.0.0.0:3333
+
+# -----------------------------------------------------------------
+# ZMQ Notifications
+# -----------------------------------------------------------------
+
+# ZMQ PUB endpoint for block/tx notifications. Leave unset to disable.
+# zmq_pub_addr = tcp://0.0.0.0:28634

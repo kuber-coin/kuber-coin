@@ -1,6 +1,14 @@
 # KuberCoin Operations Web
 
-Operations and monitoring dashboard for KuberCoin network.
+Internal operator dashboard for node administration, metrics, and testnet
+operations. This app is not part of the public wallet or explorer trust
+surface.
+
+If this repository is published, treat this app as operator-only tooling:
+
+- do not deploy it without authentication in front of it
+- do not expose its RPC proxy publicly
+- do not treat it as an end-user product
 
 ## Features
 
@@ -28,6 +36,8 @@ npm run dev
 # Open http://localhost:3300
 ```
 
+This quick start is for local development only.
+
 ## Configuration
 
 Edit `.env` as needed:
@@ -51,6 +61,9 @@ Automatically generates alerts for:
 npm run build
 npm start
 ```
+
+Production deployments should place this app behind separate operator
+authentication and network controls.
 
 ## API Routes
 

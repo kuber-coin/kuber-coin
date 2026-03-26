@@ -1,7 +1,9 @@
 #!/bin/bash
-# cloud-init.sh — Startup script for KuberCoin seed1 (P2P seed node, East US)
+# cloud-init.sh — Example startup script for KuberCoin seed1 (P2P seed node, East US)
 # This file is base64-encoded and passed as VM customData via Bicep.
 # Cloud-init runs it once on first boot as root.
+#
+# This script is an example testnet bootstrap, not a production-hardened setup.
 #
 # What this does:
 #   1. Installs Docker + Compose plugin
@@ -47,7 +49,7 @@ mkdir -p /data/kubercoin/seed1
 
 # ── Clone repo and build Docker image ────────────────────────────────────────
 apt-get install -y --no-install-recommends git
-git clone --depth 1 https://github.com/your-org/kubercoin.git /opt/kubercoin/src 2>/dev/null || true
+git clone --depth 1 https://github.com/kuber-coin/kuber-coin.git /opt/kubercoin/src 2>/dev/null || true
 # If no git repo yet, we copy the Dockerfile inline and build from the release binary
 # For now build the image using the simple Dockerfile from the cloned repo
 cd /opt/kubercoin/src && docker build -f Dockerfile.simple -t kubercoin-node:testnet . || true
@@ -72,7 +74,6 @@ services:
       KUBERCOIN_P2P_ADDR: "0.0.0.0:18633"
       KUBERCOIN_RPC_ADDR: "0.0.0.0:8332"
       KUBERCOIN_API_AUTH_ENABLED: "false"
-      KUBERCOIN_ALLOW_INSECURE_NO_AUTH: "true"
       # connect seed1 to the example secondary seed placeholder
       KUBERCOIN_INITIAL_PEERS: "198.51.100.20:18633"
     healthcheck:

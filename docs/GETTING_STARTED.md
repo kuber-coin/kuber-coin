@@ -290,7 +290,7 @@ KUBERCOIN_RATE_LIMIT_PER_MIN=60
 
 # JSON-RPC
 KUBERCOIN_RPC_USER=admin
-KUBERCOIN_RPC_PASSWORD=changeme
+KUBERCOIN_RPC_PASSWORD=replace-with-a-strong-password
 
 # Demo Network Traffic (for testing)
 KUBERCOIN_DEMO_PEERS=2

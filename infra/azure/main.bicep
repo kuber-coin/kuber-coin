@@ -1,7 +1,10 @@
-// main.bicep — KuberCoin testnet root deployment
+// main.bicep — KuberCoin testnet example root deployment
 // Provisions two seed VMs in different regions (East US + West Europe)
 // with public IPs, NSGs, cloud-init startup scripts, and a User-Assigned
 // Managed Identity. Complies with azd mandatory deployment rules.
+//
+// This template is intended as a public example that operators review and
+// adapt before deployment.
 //
 // Deploy:
 //   azd env new kubercoin-testnet
@@ -30,7 +33,7 @@ param vmSize string = 'Standard_B1ms'
 param osDiskSizeGB int = 30
 
 @description('SSH admin username')
-param adminUsername string = 'kubercoin'
+param adminUsername string = 'azureuser'
 
 @description('SSH public key for admin access')
 @secure()
@@ -135,11 +138,11 @@ output seed1PublicIp string = vm1.outputs.publicIpAddress
 @description('Public IP address of seed node 2 (West Europe)')
 output seed2PublicIp string = vm2.outputs.publicIpAddress
 
-@description('DNS A record to create: testnet-seed.kuber-coin.com → seed1PublicIp')
-output dnsSeed1Instruction string = 'Add A record: testnet-seed.kuber-coin.com → ${vm1.outputs.publicIpAddress}'
+@description('Generic DNS instruction for seed node 1')
+output dnsSeed1Instruction string = 'Add an A record for your public seed1 hostname to ${vm1.outputs.publicIpAddress}'
 
-@description('DNS A record to create: testnet2.kuber-coin.com → seed2PublicIp')
-output dnsSeed2Instruction string = 'Add A record: testnet2.kuber-coin.com → ${vm2.outputs.publicIpAddress}'
+@description('Generic DNS instruction for seed node 2')
+output dnsSeed2Instruction string = 'Add an A record for your public seed2 hostname to ${vm2.outputs.publicIpAddress}'
 
 @description('Grafana dashboard URL (seed2)')
 output grafanaUrl string = 'http://${vm2.outputs.publicIpAddress}:3000'

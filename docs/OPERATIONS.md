@@ -26,7 +26,7 @@
 #### 1. Build from Source
 ```bash
 # Clone repository
-git clone https://github.com/your-org/kubercoin.git
+git clone https://github.com/kuber-coin/kuber-coin.git
 cd kubercoin
 
 # Build release binary
@@ -109,7 +109,7 @@ bind_address = "127.0.0.1:8080"
 
 # RPC authentication
 username = "admin"
-password = "changeme_in_production"
+password = "replace-with-a-strong-password"
 
 [mining]
 # Enable mining
@@ -423,7 +423,7 @@ kubercoin-cli status
 #### 2. Upgrade Binary
 ```bash
 # Download new version
-wget https://github.com/your-org/kubercoin/releases/download/v2.0.0/kubercoin-v2.0.0-linux-amd64.tar.gz
+wget https://github.com/kuber-coin/kuber-coin/releases/download/v2.0.0/kubercoin-v2.0.0-linux-amd64.tar.gz
 
 # Verify checksum
 sha256sum -c kubercoin-v2.0.0-linux-amd64.tar.gz.sha256
@@ -703,8 +703,8 @@ top -p $(pidof kubercoin)
 
 ## Additional Resources
 
-- [GitHub Repository](https://github.com/your-org/kubercoin)
+- [GitHub Repository](https://github.com/kuber-coin/kuber-coin)
 - [Documentation](https://docs.kubercoin.org)
 - [API Reference](https://docs.kubercoin.org/api)
 - [Community Forum](https://forum.kubercoin.org)
-- [Security Policy](https://github.com/your-org/kubercoin/security/policy)
+- [Security Policy](https://github.com/kuber-coin/kuber-coin/security/policy)

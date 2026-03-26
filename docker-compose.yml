@@ -1,3 +1,6 @@
+# Development and testnet reference stack.
+# Do not expose this Compose file directly to the public Internet without
+# reviewing authentication, wallet secrets, and reverse-proxy controls.
 services:
   # Kubercoin Node
   node:
@@ -27,8 +30,8 @@ services:
       - RUST_LOG=info
       - KUBERCOIN_NETWORK=testnet
       - KUBERCOIN_RPC_ADDR=0.0.0.0:8634
-      - KUBERCOIN_RPC_USER=${RPC_USER:-admin}
-      - KUBERCOIN_RPC_PASSWORD=${RPC_PASSWORD:-changeme}
+      - KUBERCOIN_RPC_USER=${RPC_USER:-}
+      - KUBERCOIN_RPC_PASSWORD=${RPC_PASSWORD:-}
       - KUBERCOIN_API_AUTH_ENABLED=${KUBERCOIN_API_AUTH_ENABLED:-false}
       - KUBERCOIN_API_KEYS=${KUBERCOIN_API_KEYS:-}
       - KUBERCOIN_EXPERIMENTAL_API=${KUBERCOIN_EXPERIMENTAL_API:-1}
@@ -91,7 +94,7 @@ services:
     environment:
       - KUBERCOIN_WALLET_API_URL=http://node:8634
       - KUBERCOIN_WALLET_API_KEY=${KUBERCOIN_API_KEYS:-}
-      - KUBERCOIN_WALLET_SHARED_PASSPHRASE=${KUBERCOIN_WALLET_SHARED_PASSPHRASE:-wallet-default-passphrase}
+      - KUBERCOIN_WALLET_SHARED_PASSPHRASE=${KUBERCOIN_WALLET_SHARED_PASSPHRASE:-}
     networks:
       - kubercoin-network
     deploy:
@@ -296,7 +299,7 @@ services:
       - ./infra/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-set-grafana-password-before-use}
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
       - kubercoin-network
@@ -322,7 +325,7 @@ services:
     environment:
       - POSTGRES_DB=kubercoin
       - POSTGRES_USER=${POSTGRES_USER:-kubercoin}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-set-postgres-password-before-use}
     networks:
       - kubercoin-network
     profiles:

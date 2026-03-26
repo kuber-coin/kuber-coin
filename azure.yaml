@@ -1,4 +1,4 @@
-# azure.yaml — Azure Developer CLI (azd) service catalog
+# azure.yaml — Azure Developer CLI (azd) example service catalog
 # https://learn.microsoft.com/azure/developer/azure-developer-cli/azd-schema
 name: kubercoin-testnet
 metadata:
@@ -8,5 +8,3 @@ infra:
   provider: bicep
   path: infra/azure
   module: main
-
-services: {}

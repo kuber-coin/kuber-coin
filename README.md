@@ -21,6 +21,16 @@ Verified locally as of 2026-03-16:
 
 See [docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md), [docs/E2E_COIN_WORKFLOW.md](docs/E2E_COIN_WORKFLOW.md), and [docs/SECURITY.md](docs/SECURITY.md) for the evidence behind these claims.
 
+## Open-Source Boundary
+
+KuberCoin keeps the trust-critical cryptocurrency stack public: protocol rules,
+node software, wallet code, explorer surfaces, SDKs, and formal specs. Operator
+dashboards, deployment automation, and infrastructure templates are reviewed as
+separate surfaces and may be internal-only or published as sanitized examples.
+
+See [docs/OPEN_SOURCE_BOUNDARY.md](docs/OPEN_SOURCE_BOUNDARY.md) for the current
+public-versus-internal policy.
+
 ## Quick Start
 
 ### Download
@@ -166,9 +176,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/scripts/all_sweep.ps1
 - [Mining Guide](docs/MINING_GUIDE.md) — How to mine
 - [Wallet Guide](docs/WALLET_GUIDE.md) — Wallet usage
 - [Grant Readiness](docs/GRANT_READINESS.md) — Current funding posture and evidence
+- [Open-Source Boundary](docs/OPEN_SOURCE_BOUNDARY.md) — What stays public vs. sanitized/internal
 - [API Reference](docs/API_DOCUMENTATION.md) — REST API docs
 - [CLI Reference](docs/CLI_REFERENCE.md) — Command-line interface
 - [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) — Production deployment
+- [Azure Template Notes](infra/azure/README.md) — Example-only Azure deployment guidance
 - [Contributing](docs/CONTRIBUTING.md) — Development guidelines
 - [Changelog](CHANGELOG.md) — Release history
 - [Security](SECURITY.md) — Vulnerability reporting

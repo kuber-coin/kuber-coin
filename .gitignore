@@ -66,6 +66,7 @@ launch_*.log
 *.dll
 *.so
 *.dylib
+infra/azure/main.json
 apps/native/mining-ui/windows-winui3/bin/
 apps/native/mining-ui/windows-winui3/obj/
 tools/test-console/bin/
