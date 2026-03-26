@@ -367,8 +367,32 @@ cargo audit
 # Unsafe usage inventory
 cargo geiger --manifest-path core/node/Cargo.toml --all-targets --all-features
 
-# Fuzz testing (example)
-cargo fuzz run deserialize_block -- -max_total_time=3600
+# Fuzz testing
+
+# Compile-check all fuzz targets locally
+cargo check --manifest-path core/tests/fuzz/Cargo.toml --bins
+
+# Windows local sweep task uses compile-only validation because MSVC libFuzzer
+# linking/runtime is not working in this repo's current setup.
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/scripts/fuzz_smoke_all.ps1
+
+# VS Code tasks
+# - fuzz-check-all
+# - fuzz-local-sweep
+# - fuzz-check-target
+
+# Real fuzz execution: Linux, WSL, or CI
+bash tools/scripts/fuzz_smoke_all.sh
+
+# VS Code WSL tasks
+# - fuzz-wsl-sweep
+# - fuzz-wsl-target
+
+# Full guide
+# docs/FUZZING.md
+
+# Single-target example
+cargo +nightly fuzz run --fuzz-dir core/tests/fuzz fuzz_block core/tests/fuzz/corpus/fuzz_block -- -max_total_time=3600
 ```
 
 ---

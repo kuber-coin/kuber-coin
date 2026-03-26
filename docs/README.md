@@ -34,6 +34,9 @@ Use these documents first if you are assessing project maturity or grant readine
 - [E2E_COIN_WORKFLOW.md](E2E_COIN_WORKFLOW.md) - current real-stack E2E evidence, including validated wallet live coverage
 - [SECURITY.md](SECURITY.md) - current public security posture, audit readiness, and reporting policy
 - [COVERAGE.md](COVERAGE.md) - current measured coverage numbers and red zones
+- [FUZZING.md](FUZZING.md) - local, WSL/Linux, and CI fuzzing workflows
+- [GITHUB_ACTIONS_LOCAL.md](GITHUB_ACTIONS_LOCAL.md) - local mirrors for practical GitHub Actions validation
+- [GITHUB_ACTIONS_MATRIX.md](GITHUB_ACTIONS_MATRIX.md) - workflow-by-workflow map from GitHub Actions jobs to local tasks and scripts
 
 If any older narrative below conflicts with those evidence documents, treat the evidence documents as authoritative.
 
